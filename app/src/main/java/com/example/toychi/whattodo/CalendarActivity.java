@@ -43,14 +43,14 @@ public class CalendarActivity extends AppCompatActivity {
         GridView gridview = findViewById(R.id.gridview);
         gridview.setAdapter(adapter);
 
-       // handler = new Handler();
-       // handler.post(calendarUpdater);
+        handler = new Handler();
+        handler.post(calendarUpdater);
 
         TextView title = findViewById(R.id.title);
         title.setText(android.text.format.DateFormat.format("MMMM yyyy", month));
 
         ImageView previous = findViewById(R.id.previous);
-/*
+
         previous.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -96,10 +96,10 @@ public class CalendarActivity extends AppCompatActivity {
 
             }
         });
-        */
+
     }
 
-/*
+
         protected void setNextMonth() {
             if (month.get(Calendar.MONTH) == month.getActualMaximum(Calendar.MONTH)) {
                 month.set((month.get(Calendar.YEAR) + 1),
@@ -159,5 +159,5 @@ public class CalendarActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
             }
         };
-*/
+
 }

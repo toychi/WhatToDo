@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -89,6 +90,7 @@ public class CalendarAdapter extends BaseAdapter {
             v = vi.inflate(R.layout.calendar_item, null);
 
         }
+        v.setLayoutParams(new GridView.LayoutParams(GridView.AUTO_FIT, 200));
         dayView = (TextView) v.findViewById(R.id.date);
         // separates daystring into parts.
         String[] separatedTime = dayString.get(position).split("-");
@@ -114,7 +116,7 @@ public class CalendarAdapter extends BaseAdapter {
             previousView = v;
         } else {
             // v.setBackgroundResource(R.drawable.list_item_background);
-            v.setBackgroundResource(R.drawable.ic_launcher_background);
+            v.setBackgroundColor(Color.parseColor("#efefef"));
         }
         dayView.setText(gridvalue);
 
@@ -142,7 +144,7 @@ public class CalendarAdapter extends BaseAdapter {
     public View setSelected(View view) {
         if (previousView != null) {
             // previousView.setBackgroundResource(R.drawable.list_item_background);
-            previousView.setBackgroundResource(R.drawable.ic_launcher_background);
+            previousView.setBackgroundColor(Color.parseColor("#efefef"));
         }
         previousView = view;
         // view.setBackgroundResource(R.drawable.calendar_cel_selectl);
