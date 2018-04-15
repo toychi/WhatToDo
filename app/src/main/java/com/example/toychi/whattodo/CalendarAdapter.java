@@ -2,6 +2,7 @@ package com.example.toychi.whattodo;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,6 +84,7 @@ public class CalendarAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;
         TextView dayView;
+        TextView size;
         if (convertView == null) { // if it's not recycled, initialize some
             // attributes
             LayoutInflater vi = (LayoutInflater) mContext
@@ -90,7 +92,7 @@ public class CalendarAdapter extends BaseAdapter {
             v = vi.inflate(R.layout.calendar_item, null);
 
         }
-        v.setLayoutParams(new GridView.LayoutParams(GridView.AUTO_FIT, 200));
+        v.setLayoutParams(new GridView.LayoutParams(GridView.AUTO_FIT, 150));
         dayView = (TextView) v.findViewById(R.id.date);
         // separates daystring into parts.
         String[] separatedTime = dayString.get(position).split("-");
@@ -116,7 +118,7 @@ public class CalendarAdapter extends BaseAdapter {
             previousView = v;
         } else {
             // v.setBackgroundResource(R.drawable.list_item_background);
-            v.setBackgroundColor(Color.parseColor("#efefef"));
+            v.setBackgroundColor(Color.parseColor("#ffffff"));
         }
         dayView.setText(gridvalue);
 
@@ -144,11 +146,13 @@ public class CalendarAdapter extends BaseAdapter {
     public View setSelected(View view) {
         if (previousView != null) {
             // previousView.setBackgroundResource(R.drawable.list_item_background);
-            previousView.setBackgroundColor(Color.parseColor("#efefef"));
+            ((TextView) previousView.findViewById(R.id.date)).setTextColor(Color.BLUE);
+            previousView.setBackgroundColor(Color.parseColor("#ffffff"));
         }
         previousView = view;
         // view.setBackgroundResource(R.drawable.calendar_cel_selectl);
-        view.setBackgroundResource(R.drawable.ic_launcher_foreground);
+        ((TextView) view.findViewById(R.id.date)).setTextColor(Color.WHITE);
+        view.setBackgroundResource(R.color.colorAccent);
         return view;
     }
 

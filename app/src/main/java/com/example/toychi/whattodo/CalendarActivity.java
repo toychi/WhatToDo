@@ -2,22 +2,27 @@ package com.example.toychi.whattodo;
 
 import android.app.Activity;
 import android.os.Handler;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.DateFormat;
+import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 public class CalendarActivity extends AppCompatActivity {
 
@@ -28,6 +33,13 @@ public class CalendarActivity extends AppCompatActivity {
     // marker.
     public ArrayList<String> items; // container to store calendar items which
     // needs showing the event marker
+
+    ListView simpleList;
+
+    DateFormatSymbols dfs = new DateFormatSymbols();
+    final private String[] months = dfs.getMonths();
+
+    TextView selected_date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +58,16 @@ public class CalendarActivity extends AppCompatActivity {
         handler = new Handler();
         handler.post(calendarUpdater);
 
-        TextView title = findViewById(R.id.title);
+        final TextView title = findViewById(R.id.title);
         title.setText(android.text.format.DateFormat.format("MMMM yyyy", month));
 
-        ImageView previous = findViewById(R.id.previous);
+        selected_date = findViewById(R.id.selected_date);
 
+        Locale locale = Locale.getDefault();
+        selected_date.setText(month.get(Calendar.DATE) + " " + month.getDisplayName(Calendar.MONTH, Calendar.LONG, locale) + " " + month.get(Calendar.YEAR));
+
+
+        ImageView previous = findViewById(R.id.previous);
         previous.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -82,6 +99,8 @@ public class CalendarActivity extends AppCompatActivity {
                 String gridvalueString = separatedTime[2].replaceFirst("^0*",
                         "");// taking last part of date. ie; 2 from 2012-12-02.
                 int gridvalue = Integer.parseInt(gridvalueString);
+
+                StringBuilder title = new StringBuilder(months[Integer.parseInt(separatedTime[1]) - 1] + " " + separatedTime[0]);
                 // navigate to next or previous month on clicking offdays.
                 if ((gridvalue > 10) && (position < 8)) {
                     setPreviousMonth();
@@ -89,13 +108,20 @@ public class CalendarActivity extends AppCompatActivity {
                 } else if ((gridvalue < 7) && (position > 28)) {
                     setNextMonth();
                     refreshCalendar();
+                } else {
+                    title.insert(0,gridvalueString + " ");
                 }
                 ((CalendarAdapter) parent.getAdapter()).setSelected(v);
 
                 showToast(selectedGridDate);
+                selected_date.setText(title.toString());
 
             }
         });
+
+        simpleList = (ListView) findViewById(R.id.list);
+        TaskListAdapter taskListAdapter = new TaskListAdapter(getApplicationContext(),new String[]{"a"});
+        simpleList.setAdapter(taskListAdapter);
 
     }
 
@@ -133,6 +159,8 @@ public class CalendarActivity extends AppCompatActivity {
             handler.post(calendarUpdater); // generate some calendar items
 
             title.setText(android.text.format.DateFormat.format("MMMM yyyy", month));
+
+            selected_date.setText(android.text.format.DateFormat.format("MMMM yyyy", month));
         }
 
         public Runnable calendarUpdater = new Runnable() {
