@@ -1,10 +1,12 @@
 package com.example.toychi.whattodo;
 
 import android.app.Activity;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Handler;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
@@ -16,6 +18,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.toychi.whattodo.persistence.Task;
+import com.example.toychi.whattodo.ui.TaskViewModel;
+import com.example.toychi.whattodo.ui.TaskViewModelFactory;
+
 import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
@@ -23,6 +29,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 public class CalendarActivity extends AppCompatActivity {
 
@@ -40,6 +51,11 @@ public class CalendarActivity extends AppCompatActivity {
     final private String[] months = dfs.getMonths();
 
     TextView selected_date;
+
+    // Room Database
+    private TaskViewModelFactory mViewModelFactory;
+    private TaskViewModel mViewModel;
+    private final CompositeDisposable mDisposable = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,10 +135,37 @@ public class CalendarActivity extends AppCompatActivity {
             }
         });
 
-        simpleList = (ListView) findViewById(R.id.list);
-        TaskListAdapter taskListAdapter = new TaskListAdapter(getApplicationContext(),new String[]{"a"});
-        simpleList.setAdapter(taskListAdapter);
+        // Room Database
+        mViewModelFactory = Injection.provideViewModelFactory(this);
+        mViewModel = ViewModelProviders.of(this, mViewModelFactory).get(TaskViewModel.class);
 
+        simpleList = (ListView) findViewById(R.id.list);
+        // TaskListAdapter taskListAdapter = new TaskListAdapter(getApplicationContext(),new String[]{"a"});
+        // simpleList.setAdapter(taskListAdapter);
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Subscribe to the emissions of the user name from the view model.
+        // Update the user name text view, at every onNext emission.
+        // In case of error, log the exception.
+        mDisposable.add(mViewModel.getUserName()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(username -> {
+                    TaskListAdapter tt = new TaskListAdapter(getApplicationContext(), username);
+                    simpleList.setAdapter(tt);
+                    }, throwable -> Log.e("Error in Calendar activity", "Unable to load task", throwable)));
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        // clear all the subscriptions
+        mDisposable.clear();
     }
 
 
