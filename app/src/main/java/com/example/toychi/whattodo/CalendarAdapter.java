@@ -134,13 +134,16 @@ public class CalendarAdapter extends BaseAdapter {
         }
 
         // show icon if date is not empty and it exists in the items array
+        /*
         ImageView iw = (ImageView) v.findViewById(R.id.date_icon);
         if (date.length() > 0 && items != null && items.contains(date)) {
             iw.setVisibility(View.VISIBLE);
         } else {
             iw.setVisibility(View.INVISIBLE);
         }
+        */
         return v;
+
     }
 
     public View setSelected(View view) {
@@ -152,7 +155,8 @@ public class CalendarAdapter extends BaseAdapter {
         previousView = view;
         // view.setBackgroundResource(R.drawable.calendar_cel_selectl);
         ((TextView) view.findViewById(R.id.date)).setTextColor(Color.WHITE);
-        view.setBackgroundResource(R.color.colorAccent);
+        // view.setBackgroundResource(R.color.colorAccent);
+        view.setBackgroundResource(R.drawable.shape_circle_bg);
         return view;
     }
 
