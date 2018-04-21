@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.util.Xml;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -12,6 +13,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
+
+import org.xmlpull.v1.XmlPullParser;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -35,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         //Add Task to taskbox
         LinearLayout taskBox = findViewById(R.id.taskbox);
         int totalTask = 3;
+
         for(int runningTask=0; runningTask<totalTask; runningTask++){
             TextView t = new TextView(this);
             t.setText("Task 1");
@@ -45,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
             taskBox.addView(t);
 
             //Progress bar
-            LinearLayout progressBar = new LinearLayout(this);
+            /*LinearLayout progressBar = new LinearLayout(this);
             progressBar.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,50));
             progressBar.setOrientation(LinearLayout.HORIZONTAL);
             progressBar.setBackgroundColor(Color.GRAY);
@@ -61,6 +65,13 @@ public class MainActivity extends AppCompatActivity {
                 s.setBackgroundColor(Color.RED);
                 progressBar.addView(s);
             }
+            */
+
+            RoundCornerProgressBar progressBar = new RoundCornerProgressBar(this, null);
+            progressBar.setMax(5);
+            progressBar.setProgress(3);
+            progressBar.setPadding(10,10,10,10);
+
             taskBox.addView(progressBar);
         }
     }
