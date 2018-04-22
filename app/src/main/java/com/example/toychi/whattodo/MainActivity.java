@@ -107,10 +107,12 @@ public class MainActivity extends AppCompatActivity {
             case R.id.nav_desk:
                 fragmentClass = CalendarFragment.class;
                 break;
-                /*
+
             case R.id.nav_calendar:
-                fragmentClass = SecondFragment.class;
+                fragmentClass = CalendarFragment.class;
                 break;
+                
+                /*
             case R.id.nav_completed:
                 fragmentClass = ThirdFragment.class;
                 break;
