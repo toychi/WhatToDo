@@ -3,9 +3,12 @@ package com.example.toychi.whattodo;
 import android.app.Activity;
 import android.os.Handler;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -24,7 +27,19 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-public class CalendarActivity extends AppCompatActivity {
+public class CalendarActivity extends Fragment {
+
+    private ViewGroup mViewGroup;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        mViewGroup = container;
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.activity_calendar, container, false);
+    }
+
+
 
     public Calendar month, itemmonth;// calendar instances.
 
@@ -42,32 +57,33 @@ public class CalendarActivity extends AppCompatActivity {
     TextView selected_date;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_calendar);
+
+        View mView = getView();
 
         month = Calendar.getInstance();
         itemmonth = (Calendar) month.clone();
 
         items = new ArrayList<String>();
-        adapter = new CalendarAdapter(this,(GregorianCalendar) month);
+        adapter = new CalendarAdapter(getActivity(),(GregorianCalendar) month);
 
-        GridView gridview = findViewById(R.id.gridview);
+        GridView gridview = mView.findViewById(R.id.gridview);
         gridview.setAdapter(adapter);
 
         handler = new Handler();
         handler.post(calendarUpdater);
 
-        final TextView title = findViewById(R.id.title);
+        final TextView title = mView.findViewById(R.id.title);
         title.setText(android.text.format.DateFormat.format("MMMM yyyy", month));
 
-        selected_date = findViewById(R.id.selected_date);
+        selected_date = mView.findViewById(R.id.selected_date);
 
         Locale locale = Locale.getDefault();
         selected_date.setText(month.get(Calendar.DATE) + " " + month.getDisplayName(Calendar.MONTH, Calendar.LONG, locale) + " " + month.get(Calendar.YEAR));
 
 
-        ImageView previous = findViewById(R.id.previous);
+        ImageView previous = mView.findViewById(R.id.previous);
         previous.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -77,7 +93,7 @@ public class CalendarActivity extends AppCompatActivity {
             }
         });
 
-        ImageView next = findViewById(R.id.next);
+        ImageView next = mView.findViewById(R.id.next);
         next.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -119,8 +135,8 @@ public class CalendarActivity extends AppCompatActivity {
             }
         });
 
-        simpleList = (ListView) findViewById(R.id.list);
-        TaskListAdapter taskListAdapter = new TaskListAdapter(getApplicationContext(),new String[]{"a"});
+        simpleList = (ListView) mView.findViewById(R.id.list);
+        TaskListAdapter taskListAdapter = new TaskListAdapter(getContext(),new String[]{"a"});
         simpleList.setAdapter(taskListAdapter);
 
     }
@@ -147,12 +163,12 @@ public class CalendarActivity extends AppCompatActivity {
         }
 
         protected void showToast(String string) {
-            Toast.makeText(this, string, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), string, Toast.LENGTH_SHORT).show();
 
         }
 
         public void refreshCalendar() {
-            TextView title = (TextView) findViewById(R.id.title);
+            TextView title = (TextView) getView().findViewById(R.id.title);
 
             adapter.refreshDays();
             adapter.notifyDataSetChanged();

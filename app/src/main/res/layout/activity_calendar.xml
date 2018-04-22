@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_margin="0dp"
     android:padding="0dp"
-    tools:context="com.example.toychi.whattodo.CalendarActivity">
+    tools:context="com.example.toychi.whattodo.CalendarFragment">
 
     <LinearLayout
         android:id="@+id/calendar_view"

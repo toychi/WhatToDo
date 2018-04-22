@@ -2,16 +2,19 @@ package com.example.toychi.whattodo;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -19,7 +22,7 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
-
+    private DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,12 +66,59 @@ public class MainActivity extends AppCompatActivity {
             }
             taskBox.addView(progressBar);
         }
+
+        // Handle navigation click events
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        // set item as selected to persist highlight
+                        menuItem.setChecked(true);
+                        // close drawer when item is tapped
+                        mDrawerLayout.closeDrawers();
+
+                        // Add code here to update the UI based on the item selected
+                        // For example, swap UI fragments here
+                        selectDrawerItem(menuItem);
+
+                        return true;
+                    }
+                });
     }
 
+    public void selectDrawerItem(MenuItem menuItem) {
+        // Create a new fragment and specify the fragment to show based on nav item clicked
+        Fragment fragment = null;
+        Class fragmentClass;
+        switch(menuItem.getItemId()) {
+            case R.id.nav_desk:
+                fragmentClass = CalendarFragment.class;
+                break;
+                /*
+            case R.id.nav_calendar:
+                fragmentClass = SecondFragment.class;
+                break;
+            case R.id.nav_completed:
+                fragmentClass = ThirdFragment.class;
+                break;
+                */
+            default:
+                fragmentClass = CalendarFragment.class;
+        }
 
-    /** Called when the user taps the Send button */
-    public void sendMessage(View view) {
-        Intent intent = new Intent(this, CalendarActivity.class);
-        startActivity(intent);
+        try {
+            fragment = (Fragment) fragmentClass.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Insert the fragment by replacing any existing fragment
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+
     }
+
 }
