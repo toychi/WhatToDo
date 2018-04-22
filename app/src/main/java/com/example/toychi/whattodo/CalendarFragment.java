@@ -1,7 +1,6 @@
 package com.example.toychi.whattodo;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,7 +44,7 @@ public class CalendarFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.activity_calendar, container, false);
+        View view = inflater.inflate(R.layout.fragment_calendar, container, false);
 
         GridView gridview = view.findViewById(R.id.gridview);
         gridview.setAdapter(adapter);
