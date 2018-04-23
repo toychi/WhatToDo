@@ -41,5 +41,7 @@ dependencies {
     implementation "android.arch.lifecycle:common-java8:1.1.1"
     // AndroidSchedulers
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    // RoundCorner
+    implementation 'com.akexorcist:RoundCornerProgressBar:1.0.0'
 
 }
