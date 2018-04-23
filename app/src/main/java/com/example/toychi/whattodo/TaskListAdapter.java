@@ -8,20 +8,24 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class TaskListAdapter extends BaseAdapter {
 
     Context context;
+    ArrayList<String> taskList;
     String[] item = new String[]{"Wireless Project","HCI Project","DataSci Project","Essay","TRX","Security"};
     LayoutInflater inflter;
 
-    public TaskListAdapter(Context appContext, String[] item){
+    public TaskListAdapter(Context appContext, ArrayList<String> item){
         this.context = appContext;
+        this.taskList = item;
         inflter = (LayoutInflater.from(appContext));
     }
 
     @Override
     public int getCount() {
-        return item.length;
+        return taskList.size();
     }
 
     @Override
@@ -40,7 +44,7 @@ public class TaskListAdapter extends BaseAdapter {
         TextView item = (TextView) view.findViewById(R.id.textView4);
         ImageView image = (ImageView) view.findViewById(R.id.imageView);
         image.setImageResource(R.drawable.ic_launcher_background);
-        item.setText(this.item[i]);
+        item.setText(this.taskList.get(i));
         return view;
     }
 }
