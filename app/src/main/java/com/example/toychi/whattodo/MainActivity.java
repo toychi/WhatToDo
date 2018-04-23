@@ -86,9 +86,4 @@ public class MainActivity extends AppCompatActivity {
                         throwable -> Log.e(TAG, "Unable to update username", throwable)));
     }
 
-    /** Called when the user taps the Send button */
-    public void sendMessage(View view) {
-        Intent intent = new Intent(this, CalendarActivity.class);
-        startActivity(intent);
-    }
 }
