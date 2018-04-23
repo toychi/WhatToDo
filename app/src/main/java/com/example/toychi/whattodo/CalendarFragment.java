@@ -1,7 +1,9 @@
 package com.example.toychi.whattodo;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +14,17 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.toychi.whattodo.ui.TaskViewModel;
+import com.example.toychi.whattodo.ui.TaskViewModelFactory;
+
 import java.text.DateFormatSymbols;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class CalendarFragment extends Fragment {
 
@@ -27,8 +36,13 @@ public class CalendarFragment extends Fragment {
     final private String[] months = dfs.getMonths(); // Months strings
 
     public TextView selected_date;
-
     public TextView title;
+
+    // Room Database
+    private TaskViewModelFactory mViewModelFactory;
+    private TaskViewModel mViewModel;
+    private final CompositeDisposable mDisposable = new CompositeDisposable();
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,6 +50,10 @@ public class CalendarFragment extends Fragment {
 
         month = Calendar.getInstance();
         adapter = new CalendarAdapter(getActivity(),(GregorianCalendar) month);
+
+        // Room Database
+        mViewModelFactory = Injection.provideViewModelFactory(getActivity());
+        mViewModel = ViewModelProviders.of(this, mViewModelFactory).get(TaskViewModel.class);
 
 
     }
@@ -89,8 +107,20 @@ public class CalendarFragment extends Fragment {
         selected_date.setText(month.get(Calendar.DATE) + " " + month.getDisplayName(Calendar.MONTH, Calendar.LONG, locale) + " " + month.get(Calendar.YEAR));
 
         simpleList = (ListView) view.findViewById(R.id.list);
-        TaskListAdapter taskListAdapter = new TaskListAdapter(getContext(),new String[]{"a"});
-        simpleList.setAdapter(taskListAdapter);
+        // TaskListAdapter taskListAdapter = new TaskListAdapter(getContext(),new String[]{"a"});
+        // simpleList.setAdapter(taskListAdapter);
+
+        // Subscribe to the emissions of the user name from the view model.
+        // Update the user name text view, at every onNext emission.
+        // In case of error, log the exception.
+        mDisposable.add(mViewModel.getUserName()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(username -> {
+                    TaskListAdapter tt = new TaskListAdapter(getActivity(), username);
+                    simpleList.setAdapter(tt);
+                }, throwable -> Log.e("Error in Calendar activity", "Unable to load task", throwable)));
+
 
         return view;
     }
@@ -149,5 +179,14 @@ public class CalendarFragment extends Fragment {
         title.setText(android.text.format.DateFormat.format("MMMM yyyy", month));
 
         selected_date.setText(android.text.format.DateFormat.format("MMMM yyyy", month));
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        // clear all the subscriptions
+        mDisposable.clear();
+
     }
 }

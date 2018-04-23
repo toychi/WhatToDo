@@ -1,6 +1,6 @@
 package com.example.toychi.whattodo;
 
-<<<<<<< .merge_file_cGQYAC
+
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-=======
 import android.app.Activity;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
@@ -24,7 +23,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
->>>>>>> .merge_file_mffXtq
 
 import com.example.toychi.whattodo.persistence.Task;
 import com.example.toychi.whattodo.ui.TaskViewModel;
@@ -36,11 +34,9 @@ import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
-<<<<<<< .merge_file_cGQYAC
     private DrawerLayout mDrawerLayout;
-=======
-    private static final String TAG = MainActivity.class.getSimpleName();
 
+    private static final String TAG = MainActivity.class.getSimpleName();
     private TextView mUserName;
 
     private EditText mTaskNameInput;
@@ -52,14 +48,15 @@ public class MainActivity extends AppCompatActivity {
     private TaskViewModel mViewModel;
 
     private final CompositeDisposable mDisposable = new CompositeDisposable();
->>>>>>> .merge_file_mffXtq
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-<<<<<<< .merge_file_cGQYAC
+        // setViewModel();
+
         // Set default fragment
         FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
         tx.replace(R.id.flContent, new DeskFragment()).commit();
@@ -134,18 +131,14 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    /*
 
-}
-=======
+    private void setViewModel(){
         mViewModelFactory = Injection.provideViewModelFactory(this);
-        mUserName = findViewById(R.id.textView);
-        mUpdateButton = findViewById(R.id.button2);
-        mTaskNameInput = findViewById(R.id.task_name_input);
 
         mViewModelFactory = Injection.provideViewModelFactory(this);
         mViewModel = ViewModelProviders.of(this, mViewModelFactory).get(TaskViewModel.class);
         mUpdateButton.setOnClickListener(v -> updateTaskName());
-
     }
 
     @Override
@@ -182,5 +175,6 @@ public class MainActivity extends AppCompatActivity {
                         throwable -> Log.e(TAG, "Unable to update username", throwable)));
     }
 
+    */
+
 }
->>>>>>> .merge_file_mffXtq
