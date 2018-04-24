@@ -1,10 +1,14 @@
 package com.example.toychi.whattodo;
 
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -88,6 +92,22 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                     }
                 });
+
+        //ask for camera permission
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale((Activity)
+                    this, Manifest.permission.CAMERA)) {
+
+
+            } else {
+                ActivityCompat.requestPermissions((Activity) this,
+                        new String[]{Manifest.permission.CAMERA},
+                        1);
+            }
+
+        }
     }
 
     public void selectDrawerItem(MenuItem menuItem) {
