@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -54,6 +55,20 @@ public class SubTaskView extends AppCompatActivity {
                 }
             }
         });
+
+        //In-Progress
+        /*ListView In_Progress = findViewById(R.id.InProgressList);
+
+        for(int x=0;x<progressBar.getMax()-progressBar.getProgress();x++){
+            TextView t = new TextView(this);
+            t.setText("Subtask 1");
+        }
+        In_Progress.setAdapter(new ProgressAdapter(this,In_Progress));
+
+        //Completed
+        ListView Completed = findViewById(R.id.CompletedList);
+        */
+
 
         //delete this below 3 lines out after apple database
         List<String> list = new ArrayList<>();

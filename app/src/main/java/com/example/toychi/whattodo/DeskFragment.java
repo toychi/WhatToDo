@@ -41,7 +41,7 @@ public class DeskFragment extends Fragment {
 
         //Add Task to taskbox
         LinearLayout taskBox = view.findViewById(R.id.taskbox);
-        int totalTask = 3;
+        int totalTask = 20;
         for(int runningTask=0; runningTask<totalTask; runningTask++){
             LinearLayout task = new LinearLayout(getActivity());
             task.setOrientation(LinearLayout.VERTICAL);
@@ -62,6 +62,7 @@ public class DeskFragment extends Fragment {
             //Progress bar
             RoundCornerProgressBar progressBar = new RoundCornerProgressBar(getActivity(),null);
             progressBar.setMax(5);
+            progressBar.setMinimumHeight(70);
             progressBar.setProgress((1.0f*runningTask));
             task.addView(progressBar);
             taskBox.addView(task);
