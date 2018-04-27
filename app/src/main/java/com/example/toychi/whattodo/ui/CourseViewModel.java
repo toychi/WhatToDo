@@ -15,7 +15,7 @@ public class CourseViewModel extends ViewModel {
     private final CourseDataSource mDataSource;
 
     private ArrayList<String> courseNames;
-    private ArrayList<Course> courses;
+    private ArrayList<Integer> courseIds;
 
     public CourseViewModel(CourseDataSource dataSource){
         mDataSource = dataSource;
@@ -32,22 +32,20 @@ public class CourseViewModel extends ViewModel {
                 .map(list -> {
                     courseNames = new ArrayList<String>();
                     for (Course course:list) {
-                        String temp = course.getCourseName() + Integer.toString(course.getCid());
-                        courseNames.add(temp);
+                        courseNames.add(course.getCourseName());
                     }
                     return courseNames;
                 });
     }
 
-    public Flowable<ArrayList<Course>> getCourses() {
+    public Flowable<Integer> getCourseId(int position) {
         return mDataSource.getAllCourses()
                 .map(list -> {
-                    courses = new ArrayList<Course>();
+                    courseIds = new ArrayList<Integer>();
                     for (Course course:list) {
-                        courses.add(course);
+                        courseIds.add(Integer.valueOf(course.getCid()));
                     }
-                    return courses;
+                    return courseIds.get(position);
                 });
     }
-
 }

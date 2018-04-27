@@ -90,6 +90,23 @@ public class AddTaskActivity extends AppCompatActivity {
                     courseSpinner.setAdapter(tt);
                 }, throwable -> Log.e("Error in AddTask activity", "Unable to load course", throwable)));
 
+        courseSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                mDisposable.add(mViewModel.getCourseId(i)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(courseid -> {
+                            cid =courseid;
+                        }, throwable -> Log.e("Error in AddTask activity", "Unable to load course_id", throwable)));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
         editDate = findViewById(R.id.dateInput);
         editTime = findViewById(R.id.timeInput);
 
@@ -159,10 +176,13 @@ public class AddTaskActivity extends AppCompatActivity {
         addTask.setEnabled(false);
         // Subscribe to updating the user name.
         // Re-enable the button once the user name has been updated
-        tDisposable.add(tViewModel.addTask(0, taskName, description, dueDate, dueTime)
+        tDisposable.add(tViewModel.addTask(cid, taskName, description, dueDate, dueTime)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(() -> addTask.setEnabled(true),
+                .subscribe(() -> {
+                    addTask.setEnabled(true);
+                    finish();
+                        },
                         throwable -> Log.e(TAG, "Unable to add task", throwable)));
     }
 
