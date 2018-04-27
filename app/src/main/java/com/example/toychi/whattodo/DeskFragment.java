@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,6 +56,17 @@ public class DeskFragment extends Fragment {
                 startActivity(SubTaskView);
             }
         });
+
+        FloatingActionButton fab = view.findViewById(R.id.fabAddTask);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent AddTask = new Intent(getActivity(), AddTaskActivity.class);
+                startActivity(AddTask);
+            }
+        });
+
+
 
         return view;
     }

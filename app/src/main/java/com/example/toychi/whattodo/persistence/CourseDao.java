@@ -13,13 +13,10 @@ import io.reactivex.Flowable;
 public interface CourseDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertTask(Task task);
+    void insertCourse(Course course);
 
     @Query("SELECT * FROM courses")
     Flowable<List<Course>> getAllCourses();
-
-    @Query("SELECT * FROM courses WHERE complete = :complete")
-    Flowable<List<Course>> getByComplete(int complete);
 
     @Query("DELETE FROM courses WHERE cid = :cid")
     void deleteCourse(int cid);

@@ -58,7 +58,7 @@ public class TaskViewModel extends ViewModel {
      * @param
      * @return a {@link Completable} that completes when the user name is updated
      */
-    public Completable addTaskName(int course_id, String taskName, String taskDescription, String dueDate, String dueTime) {
+    public Completable addTask(int course_id, String taskName, String taskDescription, String dueDate, String dueTime) {
         return Completable.fromAction(() -> {
             Task mTask = new Task(course_id, taskName, taskDescription, dueDate, dueTime);
             mDataSource.insertOrUpdateTask(mTask);

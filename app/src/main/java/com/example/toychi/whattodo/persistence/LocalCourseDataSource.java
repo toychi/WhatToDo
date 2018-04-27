@@ -22,6 +22,11 @@ public class LocalCourseDataSource implements CourseDataSource {
     }
 
     @Override
+    public void insertOrUpdateCourse(Course course) {
+        mCourseDao.insertCourse(course);
+    }
+
+    @Override
     public void deleteCourse(int cid) {
         mCourseDao.deleteCourse(cid);
     }
