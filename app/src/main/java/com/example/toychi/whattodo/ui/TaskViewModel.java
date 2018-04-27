@@ -16,57 +16,55 @@ public class TaskViewModel extends ViewModel {
 
     private final TaskDataSource mDataSource;
 
-    private Task mUser;
-
-    private ArrayList<String> userNames;
+    private ArrayList<String> taskNames;
 
     public TaskViewModel(TaskDataSource dataSource) {
         mDataSource = dataSource;
     }
 
     /**
-     * Get the user name of the user.
+     * Get the names of the tasks.
      *
      * @return a {@link Flowable} that will emit every time the user name has been updated.
      */
-    public Flowable<ArrayList<String>> getUserName() {
-        return mDataSource.getTask()
+    public Flowable<ArrayList<String>> getTaskNames() {
+        return mDataSource.getAllTasks()
                 // for every emission of the user, get the user name
                 .map(list -> {
-                    userNames = new ArrayList<String>();
-                    for (Task name:list) {
-                        userNames.add(name.getTaskName());
+                    taskNames = new ArrayList<String>();
+                    for (Task task:list) {
+                        taskNames.add(task.getTaskName());
                     }
-                    return userNames;
-                });
-
-    }
-
-    public Flowable<String> getOne() {
-        return mDataSource.getOne()
-                .map(usr -> {
-                    mUser = usr;
-                    return mUser.getTaskName();
+                    return taskNames;
                 });
     }
 
     /**
-     * Update the user name.
+     * Update the task.
      *
-     * @param userName the new user name
+     * @param
      * @return a {@link Completable} that completes when the user name is updated
      */
-    public Completable updateUserName(final String userName) {
+    public Completable updateTaskName(int tid, int course_id, String taskName, String taskDescription, String dueDate, String dueTime) {
         return Completable.fromAction(() -> {
-            // if there's no use, create a new user.
-            // if we already have a user, then, since the user object is immutable,
-            // create a new user, with the id of the previous user and the updated user name.
-            mUser = mUser == null
-                    ? new Task(userName)
-                    : new Task("k", userName);
-
-            mDataSource.insertOrUpdateTask(mUser);
+            Task mTask = new Task(tid, course_id, taskName, taskDescription, dueDate, dueTime);
+            mDataSource.insertOrUpdateTask(mTask);
         });
     }
+
+    /**
+     * Update the task.
+     *
+     * @param
+     * @return a {@link Completable} that completes when the user name is updated
+     */
+    public Completable addTaskName(int course_id, String taskName, String taskDescription, String dueDate, String dueTime) {
+        return Completable.fromAction(() -> {
+            Task mTask = new Task(course_id, taskName, taskDescription, dueDate, dueTime);
+            mDataSource.insertOrUpdateTask(mTask);
+        });
+    }
+
+
 
 }

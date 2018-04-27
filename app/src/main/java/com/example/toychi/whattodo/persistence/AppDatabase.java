@@ -5,19 +5,20 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
-@Database(entities = {Task.class}, version = 1)
-public abstract class TasksDatabase extends RoomDatabase {
+@Database(version = 1, entities = {Task.class, Course.class})
+public abstract class AppDatabase extends RoomDatabase {
 
-    private static volatile TasksDatabase INSTANCE;
+    private static volatile AppDatabase INSTANCE;
 
     public abstract TaskDao taskDao();
+    public abstract CourseDao courseDao();
 
-    public static TasksDatabase getInstance(Context context) {
+    public static AppDatabase getInstance(Context context){
         if (INSTANCE == null) {
-            synchronized (TasksDatabase.class) {
+            synchronized (AppDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            TasksDatabase.class, "Sample.db")
+                            AppDatabase.class, "Sample.db")
                             .build();
                 }
             }

@@ -1,5 +1,7 @@
 package com.example.toychi.whattodo;
 
+import android.arch.persistence.room.Query;
+
 import com.example.toychi.whattodo.persistence.Task;
 
 import java.util.ArrayList;
@@ -13,20 +15,25 @@ import io.reactivex.Flowable;
 public interface TaskDataSource {
 
     /**
-     * Gets the user from the data source.
+     * Gets all tasks from the data source.
      *
-     * @return the user from the data source.
+     * @return list of tasks from the data source.
      */
-    Flowable<List<Task>> getTask();
-
-    Flowable<Task> getOne();
+    Flowable<List<Task>> getAllTasks();
 
     /**
-     * Inserts the user into the data source, or, if this is an existing user, updates it.
+     * @return the task from the data source.
+     */
+    Flowable<Task> getTask(int tid);
+
+    /**
+     * Inserts the task into the data source, or, if this is an existing user, updates it.
      *
-     * @param task the user to be inserted or updated.
+     * @param task the task to be inserted or updated.
      */
     void insertOrUpdateTask(Task task);
+
+    void deleteTask(int tid);
 
     /**
      * Deletes all users from the data source.

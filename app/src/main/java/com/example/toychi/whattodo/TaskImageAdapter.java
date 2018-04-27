@@ -22,7 +22,7 @@ public class TaskImageAdapter extends BaseAdapter {
     }
 
     public int getCount() {
-        return 20;
+        return 40;
     }
 
     public Object getItem(int position) {

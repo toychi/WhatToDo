@@ -51,10 +51,9 @@ public class CalendarFragment extends Fragment {
         month = Calendar.getInstance();
         adapter = new CalendarAdapter(getActivity(),(GregorianCalendar) month);
 
-        // Room Database
-        mViewModelFactory = Injection.provideViewModelFactory(getActivity());
+        // (Task) Room Database
+        mViewModelFactory = Injection.provideTaskViewModelFactory(getActivity());
         mViewModel = ViewModelProviders.of(this, mViewModelFactory).get(TaskViewModel.class);
-
 
     }
 
@@ -113,11 +112,11 @@ public class CalendarFragment extends Fragment {
         // Subscribe to the emissions of the user name from the view model.
         // Update the user name text view, at every onNext emission.
         // In case of error, log the exception.
-        mDisposable.add(mViewModel.getUserName()
+        mDisposable.add(mViewModel.getTaskNames()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(username -> {
-                    TaskListAdapter tt = new TaskListAdapter(getActivity(), username);
+                .subscribe(taskname -> {
+                    TaskListAdapter tt = new TaskListAdapter(getActivity(), taskname);
                     simpleList.setAdapter(tt);
                 }, throwable -> Log.e("Error in Calendar activity", "Unable to load task", throwable)));
 

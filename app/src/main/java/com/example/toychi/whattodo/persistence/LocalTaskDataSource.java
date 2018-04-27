@@ -19,18 +19,23 @@ public class LocalTaskDataSource implements TaskDataSource {
     }
 
     @Override
-    public Flowable<List<Task>> getTask() {
-        return mTaskDao.getAll();
+    public Flowable<List<Task>> getAllTasks() {
+        return mTaskDao.getAllTasks();
     }
 
     @Override
-    public Flowable<Task> getOne() {
-        return mTaskDao.getOne();
+    public Flowable<Task> getTask(int tid) {
+        return mTaskDao.getTask(tid);
     }
 
     @Override
     public void insertOrUpdateTask(Task task) {
         mTaskDao.insertTask(task);
+    }
+
+    @Override
+    public void deleteTask(int tid) {
+        mTaskDao.deleteTask(tid);
     }
 
     @Override
