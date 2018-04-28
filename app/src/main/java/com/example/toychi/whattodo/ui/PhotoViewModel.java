@@ -1,14 +1,17 @@
 package com.example.toychi.whattodo.ui;
 
 import android.arch.lifecycle.ViewModel;
+import android.net.Uri;
 
 import com.example.toychi.whattodo.CourseDataSource;
 import com.example.toychi.whattodo.PhotoDataSource;
 import com.example.toychi.whattodo.persistence.Course;
 import com.example.toychi.whattodo.persistence.Photo;
+import com.example.toychi.whattodo.persistence.Task;
 
 import java.util.ArrayList;
 
+import io.reactivex.Completable;
 import io.reactivex.Flowable;
 
 public class PhotoViewModel extends ViewModel {
@@ -36,6 +39,19 @@ public class PhotoViewModel extends ViewModel {
                     }
                     return photoUris;
                 });
+    }
+
+    /**
+     * Add the photo.
+     *
+     * @param
+     * @return a {@link Completable} that completes when the user name is updated
+     */
+    public Completable addPhoto(int tid, String uri) {
+        return Completable.fromAction(() -> {
+            Photo photo = new Photo(tid, uri);
+            mDataSource.insertPhoto(photo);
+        });
     }
 }
 

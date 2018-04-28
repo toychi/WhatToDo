@@ -1,6 +1,8 @@
 package com.example.toychi.whattodo;
 
 import android.Manifest;
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,6 +17,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Layout;
+import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -25,6 +28,10 @@ import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.example.toychi.whattodo.persistence.Task;
+import com.example.toychi.whattodo.ui.PhotoViewModel;
+import com.example.toychi.whattodo.ui.PhotoViewModelFactory;
+import com.example.toychi.whattodo.ui.TaskViewModel;
+import com.example.toychi.whattodo.ui.TaskViewModelFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -35,15 +42,30 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
+
 public class SubTaskView extends AppCompatActivity {
+    private static final String TAG = SubTaskView.class.getSimpleName();
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
+    // Room Database
+    private PhotoViewModelFactory pViewModelFactory;
+    private PhotoViewModel pViewModel;
+    private final CompositeDisposable mDisposable = new CompositeDisposable();
+
+    int tid;
     Uri testUri;
+    GridView gridView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sub_task_view);
+
+        Intent myIntent = getIntent();
+        tid = myIntent.getIntExtra("tid",1);
 
         int check = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (check == PackageManager.PERMISSION_GRANTED) {
@@ -52,6 +74,18 @@ public class SubTaskView extends AppCompatActivity {
             // Request for permission
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1024);
         }
+
+        gridView = findViewById(R.id.gridview);
+        // (Photo) Room Database
+        pViewModelFactory = Injection.providePhotoViewModelFactory(this);
+        pViewModel = ViewModelProviders.of(this, pViewModelFactory).get(PhotoViewModel.class);
+        mDisposable.add(pViewModel.getPhotoUris(1)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(photos -> {
+                    PhotoAdapter tt = new PhotoAdapter(this, photos);
+                    gridView.setAdapter(tt);
+                }, throwable -> Log.e("Error in Task View", "Unable to load photos", throwable)));
 
         //Task nname
         TextView TaskNum = findViewById(R.id.TaskNum);
@@ -89,15 +123,6 @@ public class SubTaskView extends AppCompatActivity {
         ListView Completed = findViewById(R.id.CompletedList);
         */
 
-
-        //delete this below 3 lines out after apple database
-        List<String> list = new ArrayList<>();
-        list.add("ssss");
-        list.add("aaaa");
-        list.add("oooo");
-        GridView gridview = (GridView) findViewById(R.id.gridview);
-        gridview.setAdapter(new TaskImageAdapter(this, list));
-
     }
 
 
@@ -106,18 +131,13 @@ public class SubTaskView extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-//            Bundle extras = data.getExtras();
-//            Uri imageURI = (Uri) extras.get("data");
-            Bitmap bitmap = null;
-//            Uri imageURI = data.getData();
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), testUri);
-                ImageView testtest = findViewById(R.id.testtest);
-                testtest.setImageBitmap(bitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
+            mDisposable.add(pViewModel.addPhoto(tid, testUri.toString())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(() -> {
+                            },
+                            throwable -> Log.e(TAG, "Unable to add task", throwable)));
+        }
             /*
             LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -132,8 +152,6 @@ public class SubTaskView extends AppCompatActivity {
             mImageView.setScaleType(ImageView.ScaleType.FIT_XY);
             mImageView.setAdjustViewBounds(true);
             */
-
-        }
     }
 
     String mCurrentPhotoPath;

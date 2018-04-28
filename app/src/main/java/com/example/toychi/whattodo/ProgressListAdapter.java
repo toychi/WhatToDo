@@ -45,7 +45,7 @@ public class ProgressListAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int i) {
-        return 0;
+        return tasks.get(i).getTid();
     }
 
     @Override

@@ -63,18 +63,18 @@ public class DeskFragment extends Fragment {
         // Progress Bar Adapter
         ListView listView = view.findViewById(R.id.taskbox);
         listView.setDivider(null);
-        listView.setAdapter(adapter);
         mDisposable.add(mViewModel.getTasks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(tasks -> {
-                    ProgressListAdapter tt = new ProgressListAdapter(getActivity(), tasks);
-                    listView.setAdapter(tt);
+                    adapter = new ProgressListAdapter(getActivity(), tasks);
+                    listView.setAdapter(adapter);
                 }, throwable -> Log.e("Error in Desk fragment", "Unable to load tasks", throwable)));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent SubTaskView = new Intent(getActivity(), com.example.toychi.whattodo.SubTaskView.class);
+                SubTaskView.putExtra("tid", adapter.getItemId(i));
                 startActivity(SubTaskView);
             }
         });

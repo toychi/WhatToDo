@@ -14,183 +14,107 @@
         android:background="@color/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/CameraBut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_weight="1"
+        android:clickable="true"
+        app:backgroundTint="@android:color/holo_blue_dark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_camera" />
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+        <TextView
+            android:id="@+id/TaskNum"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Task"
+            android:textAlignment="center"
+            android:textSize="30dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/DueDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Due"
+            android:textAlignment="center"
+            android:textSize="25dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            tools:layout_editor_absoluteX="51dp">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/testtest"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/TaskNum"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:text="Task"
-                android:textAlignment="center"
-                android:textSize="30dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-
-            <TextView
-                android:id="@+id/DueDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+            <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+                android:id="@+id/RoundPg"
+                android:layout_width="284dp"
+                android:layout_height="44dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
-                android:text="Due"
-                android:textAlignment="center"
-                android:textSize="25dp"
+                app:backgroundColor="#4286f4"
+                app:backgroundPadding="10dp"
+                app:backgroundRadius="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:max="10"
+                app:progress="5"
+                app:progressColor="#ffffff">
+
+
+            </com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar>
+
+            <TextView
+                android:id="@+id/TaskPercent"
+                android:layout_width="wrap_content"
+                android:layout_height="46dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="20dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="40%"
+                android:textAlignment="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/roundCornerProgressBar"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
-                    android:id="@+id/RoundPg"
-                    android:layout_width="284dp"
-                    android:layout_height="44dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="20dp"
-                    app:backgroundColor="#4286f4"
-                    app:backgroundPadding="10dp"
-                    app:backgroundRadius="15dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:max="10"
-                    app:progress="5"
-                    app:progressColor="#ffffff">
-
-
-                </com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar>
-
-                <TextView
-                    android:id="@+id/TaskPercent"
-                    android:layout_width="wrap_content"
-                    android:layout_height="46dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="40%"
-                    android:textAlignment="center"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/roundCornerProgressBar"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/InProgressLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                tools:layout_editor_absoluteX="352dp"
-                tools:layout_editor_absoluteY="127dp">
-
-                <TextView
-                    android:id="@+id/InProgressBar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="10dp"
-                    android:background="#c5c9cc"
-                    android:paddingLeft="5dp"
-                    android:text="In-Progress"
-                    android:textColor="#1c9dff"
-                    android:textStyle="bold" />
-
-                <ListView
-                    android:id="@+id/InProgressList"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/CompletedLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                tools:layout_editor_absoluteX="352dp"
-                tools:layout_editor_absoluteY="127dp">
-
-                <TextView
-                    android:id="@+id/CompletedBar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="10dp"
-                    android:background="#c5c9cc"
-                    android:paddingLeft="5dp"
-                    android:text="Completed"
-                    android:textColor="#1c9dff"
-                    android:textStyle="bold" />
-
-                <ListView
-                    android:id="@+id/CompletedList"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </LinearLayout>
-
-            <GridView
-                android:id="@+id/gridview"
-                android:layout_width="368dp"
-                android:layout_height="fill_parent"
-                android:layout_marginBottom="16dp"
-                android:columnWidth="90dp"
-                android:numColumns="auto_fit"
-                android:stretchMode="columnWidth"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:layout_editor_absoluteX="8dp"
-                tools:layout_editor_absoluteY="451dp" />
-
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/CameraBut"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="28dp"
-                android:layout_marginEnd="40dp"
-                android:layout_weight="1"
-                android:clickable="true"
-                app:backgroundTint="@android:color/holo_blue_dark"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:srcCompat="@android:drawable/ic_menu_camera" />
 
         </LinearLayout>
 
+        <GridView
+            android:id="@+id/gridview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="16dp"
+            android:columnWidth="90dp"
+            android:numColumns="auto_fit"
+            android:stretchMode="columnWidth"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    </ScrollView>
-
-
+    </LinearLayout>
 
 
 </android.support.constraint.ConstraintLayout>
