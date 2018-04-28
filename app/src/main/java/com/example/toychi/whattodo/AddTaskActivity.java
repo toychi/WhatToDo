@@ -119,6 +119,7 @@ public class AddTaskActivity extends AppCompatActivity {
                 updateDateLabel();
             }
         };
+
         TimePickerDialog.OnTimeSetListener time = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int hour, int minute) {
@@ -132,9 +133,12 @@ public class AddTaskActivity extends AppCompatActivity {
         editDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new DatePickerDialog(AddTaskActivity.this, date,
+                DatePickerDialog dialog = new DatePickerDialog(AddTaskActivity.this, date,
                         myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                        myCalendar.get(Calendar.DAY_OF_MONTH));
+                DatePicker datePicker = dialog.getDatePicker();
+                datePicker.setMinDate(System.currentTimeMillis() - 1000);
+                dialog.show();
             }
         });
         editTime.setOnClickListener(new View.OnClickListener() {

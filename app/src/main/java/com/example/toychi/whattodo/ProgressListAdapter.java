@@ -66,7 +66,9 @@ public class ProgressListAdapter extends BaseAdapter {
     public int daysLeft(String dueDate) {
         int daysLeft = 0;
         int monthDiff;
+        // Current date
         Calendar currDay = Calendar.getInstance();
+        // Due date
         Calendar day = Calendar.getInstance();
 
         try {
@@ -76,14 +78,21 @@ public class ProgressListAdapter extends BaseAdapter {
         }
 
         if(day.after(currDay)){
-            monthDiff = day.get(Calendar.MONTH) - currDay.get(Calendar.MONTH) - 1;
-            if (monthDiff > 0) {
+            monthDiff = day.get(Calendar.MONTH) - currDay.get(Calendar.MONTH);
+
+            // Due date is on same month
+            if (monthDiff == 0) {
+                return day.get(Calendar.DAY_OF_MONTH) - currDay.get(Calendar.DAY_OF_MONTH);
+            }
+            // Due date in on more than one month
+            if (monthDiff > 1) {
                 Calendar btwMonth = Calendar.getInstance();
-                for (int i = 0; i < monthDiff; i++) {
+                for (int i = 1; i < monthDiff; i++) {
                     btwMonth.add(Calendar.MONTH, 1);
                     daysLeft += btwMonth.getActualMaximum(Calendar.DAY_OF_MONTH);
                 }
             }
+            // Day before end of current month and day before due date of due month
             daysLeft += currDay.getActualMaximum(Calendar.DAY_OF_MONTH) - currDay.get(Calendar.DAY_OF_MONTH);
             daysLeft += day.get(Calendar.DAY_OF_MONTH) - day.getActualMinimum(Calendar.DAY_OF_MONTH);
         }
