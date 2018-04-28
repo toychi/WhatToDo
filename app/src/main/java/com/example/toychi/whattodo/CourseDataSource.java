@@ -1,7 +1,6 @@
 package com.example.toychi.whattodo;
 
 import com.example.toychi.whattodo.persistence.Course;
-import com.example.toychi.whattodo.persistence.Task;
 
 import java.util.List;
 

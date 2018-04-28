@@ -4,8 +4,10 @@ import android.content.Context;
 
 import com.example.toychi.whattodo.persistence.AppDatabase;
 import com.example.toychi.whattodo.persistence.LocalCourseDataSource;
+import com.example.toychi.whattodo.persistence.LocalPhotoDataSource;
 import com.example.toychi.whattodo.persistence.LocalTaskDataSource;
 import com.example.toychi.whattodo.ui.CourseViewModelFactory;
+import com.example.toychi.whattodo.ui.PhotoViewModelFactory;
 import com.example.toychi.whattodo.ui.TaskViewModelFactory;
 
 import javax.sql.DataSource;
@@ -36,6 +38,19 @@ public class Injection {
     public static CourseViewModelFactory provideCourseViewModelFactory(Context context) {
         CourseDataSource dataSource = provideCourseDataSource(context);
         return new CourseViewModelFactory(dataSource);
+    }
+
+    /*
+        Photo ViewModel
+     */
+    public static PhotoDataSource providePhotoDataSource(Context context) {
+        AppDatabase database = AppDatabase.getInstance(context);
+        return new LocalPhotoDataSource(database.photoDao());
+    }
+
+    public static PhotoViewModelFactory providePhotoViewModelFactory(Context context) {
+        PhotoDataSource dataSource = providePhotoDataSource(context);
+        return new PhotoViewModelFactory(dataSource);
     }
 
 

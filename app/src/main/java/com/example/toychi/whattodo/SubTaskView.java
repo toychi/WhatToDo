@@ -1,10 +1,18 @@
 package com.example.toychi.whattodo;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Layout;
 import android.view.View;
@@ -18,16 +26,32 @@ import android.widget.TextView;
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.example.toychi.whattodo.persistence.Task;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class SubTaskView extends AppCompatActivity {
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
+    Uri testUri;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sub_task_view);
+
+        int check = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (check == PackageManager.PERMISSION_GRANTED) {
+            //Do nothing
+        } else {
+            // Request for permission
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1024);
+        }
 
         //Task nname
         TextView TaskNum = findViewById(R.id.TaskNum);
@@ -48,11 +72,7 @@ public class SubTaskView extends AppCompatActivity {
         CameraBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-                }
+                dispatchTakePictureIntent();
             }
         });
 
@@ -80,13 +100,25 @@ public class SubTaskView extends AppCompatActivity {
 
     }
 
+
+
     //Save photo
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            ImageView mImageView = new ImageView(this);
+//            Bundle extras = data.getExtras();
+//            Uri imageURI = (Uri) extras.get("data");
+            Bitmap bitmap = null;
+//            Uri imageURI = data.getData();
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), testUri);
+                ImageView testtest = findViewById(R.id.testtest);
+                testtest.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            /*
             LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -99,9 +131,52 @@ public class SubTaskView extends AppCompatActivity {
             mImageView.setMinimumWidth(300);
             mImageView.setScaleType(ImageView.ScaleType.FIT_XY);
             mImageView.setAdjustViewBounds(true);
+            */
 
-            mImageView.setImageBitmap(imageBitmap);
         }
     }
+
+    String mCurrentPhotoPath;
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.example.toychi.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra("output", photoURI);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                testUri = photoURI;
+                System.out.println(photoURI.toString());
+            }
+        }
+    }
+
 
 }
