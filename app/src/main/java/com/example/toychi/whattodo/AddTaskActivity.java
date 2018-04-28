@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -107,7 +108,12 @@ public class AddTaskActivity extends AppCompatActivity {
         });
 
         editDate = findViewById(R.id.dateInput);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy", Locale.US);
+        Calendar tempCal = Calendar.getInstance();
+        tempCal.add(Calendar.DATE, 7);
+        editDate.setText(sdf.format(tempCal.getTime()));
         editTime = findViewById(R.id.timeInput);
+        editTime.setText("23:55");
 
         DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -158,13 +164,13 @@ public class AddTaskActivity extends AppCompatActivity {
     }
 
     private void updateDateLabel() {
-        String myFormat = "dd/MM/yy"; // In which you need put here
+        String myFormat = "dd/MM/yy";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
         editDate.setText(sdf.format(myCalendar.getTime()));
     }
     private void updateTimeLabel() {
-        String myFormat = "HH:mm"; // In which you need put here
+        String myFormat = "HH:mm";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
         editTime.setText(sdf.format(myCalendar.getTime()));
@@ -176,17 +182,21 @@ public class AddTaskActivity extends AppCompatActivity {
         String dueDate = editDate.getText().toString();
         String dueTime = editTime.getText().toString();
         // Disable the update button until the user name update has been done
-        addTask.setEnabled(false);
-        // Subscribe to updating the user name.
-        // Re-enable the button once the user name has been updated
-        tDisposable.add(tViewModel.addTask(cid, taskName, description, dueDate, dueTime)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(() -> {
-                    addTask.setEnabled(true);
-                    finish();
-                        },
-                        throwable -> Log.e(TAG, "Unable to add task", throwable)));
+        if (taskName.trim().equals("")) {
+            taskinput.setError("Task name is required.");
+        } else {
+            addTask.setEnabled(false);
+            // Subscribe to updating the user name.
+            // Re-enable the button once the user name has been updated
+            tDisposable.add(tViewModel.addTask(cid, taskName, description, dueDate, dueTime)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(() -> {
+                                addTask.setEnabled(true);
+                                finish();
+                            },
+                            throwable -> Log.e(TAG, "Unable to add task", throwable)));
+        }
     }
 
     @Override
