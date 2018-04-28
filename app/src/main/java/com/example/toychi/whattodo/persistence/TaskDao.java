@@ -19,6 +19,9 @@ public interface TaskDao {
     @Query("SELECT * FROM tasks")
     Flowable<List<Task>> getAllTasks();
 
+    @Query("SELECT * FROM tasks WHERE dueDate LIKE :dueDate")
+    Flowable<List<Task>> getTasksByDate(String dueDate);
+
     @Query("SELECT * FROM tasks WHERE tid = :tid LIMIT 1")
     Flowable<Task> getTask(int tid);
 

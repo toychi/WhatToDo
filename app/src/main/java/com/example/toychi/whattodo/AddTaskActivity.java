@@ -211,7 +211,6 @@ public class AddTaskActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.option) {
-            Toast.makeText(AddTaskActivity.this, "Action clicked", Toast.LENGTH_LONG).show();
             showAddCourseDialog();
             return true;
         }

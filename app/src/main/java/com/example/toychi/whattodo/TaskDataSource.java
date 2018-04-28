@@ -26,6 +26,8 @@ public interface TaskDataSource {
      */
     Flowable<Task> getTask(int tid);
 
+    Flowable<List<Task>> getTasksByDate(String dueDate);
+
     /**
      * Inserts the task into the data source, or, if this is an existing user, updates it.
      *

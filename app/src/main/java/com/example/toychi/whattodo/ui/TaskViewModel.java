@@ -50,6 +50,18 @@ public class TaskViewModel extends ViewModel {
                 });
     }
 
+    public Flowable<ArrayList<String>> getTasksByDate(String dueDate) {
+        return mDataSource.getTasksByDate(dueDate)
+                // for every emission of the user, get the user name
+                .map(list -> {
+                    taskNames = new ArrayList<String>();
+                    for (Task task:list) {
+                        taskNames.add(task.getTaskName());
+                    }
+                    return taskNames;
+                });
+    }
+
     /**
      * Update the task.
      *

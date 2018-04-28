@@ -29,6 +29,11 @@ public class LocalTaskDataSource implements TaskDataSource {
     }
 
     @Override
+    public Flowable<List<Task>> getTasksByDate(String dueDate) {
+        return mTaskDao.getTasksByDate(dueDate);
+    }
+
+    @Override
     public void insertOrUpdateTask(Task task) {
         mTaskDao.insertTask(task);
     }

@@ -63,6 +63,8 @@ public class CalendarFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);
 
+        simpleList = (ListView) view.findViewById(R.id.list);
+
         GridView gridview = view.findViewById(R.id.gridview);
         gridview.setAdapter(adapter);
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -93,6 +95,15 @@ public class CalendarFragment extends Fragment {
                 showToast(selectedGridDate);
                 selected_date.setText(title.toString());
 
+                String dueDate = separatedTime[2] + "/" + separatedTime[1] + "/" + separatedTime[0].substring(2);
+                mDisposable.add(mViewModel.getTasksByDate(dueDate)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(taskname -> {
+                            TaskListAdapter tt = new TaskListAdapter(getActivity(), taskname);
+                            simpleList.setAdapter(tt);
+                        }, throwable -> Log.e("Error in Calendar activity", "Unable to load task", throwable)));
+
             }
         });
         setChangeMonthButtons(view);
@@ -105,7 +116,6 @@ public class CalendarFragment extends Fragment {
         Locale locale = Locale.getDefault();
         selected_date.setText(month.get(Calendar.DATE) + " " + month.getDisplayName(Calendar.MONTH, Calendar.LONG, locale) + " " + month.get(Calendar.YEAR));
 
-        simpleList = (ListView) view.findViewById(R.id.list);
         // Subscribe to the emissions of the user name from the view model.
         // Update the user name text view, at every onNext emission.
         // In case of error, log the exception.
@@ -116,7 +126,6 @@ public class CalendarFragment extends Fragment {
                     TaskListAdapter tt = new TaskListAdapter(getActivity(), taskname);
                     simpleList.setAdapter(tt);
                 }, throwable -> Log.e("Error in Calendar activity", "Unable to load task", throwable)));
-
         return view;
     }
 
