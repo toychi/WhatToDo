@@ -79,7 +79,7 @@ public class SubTaskView extends AppCompatActivity {
         // (Photo) Room Database
         pViewModelFactory = Injection.providePhotoViewModelFactory(this);
         pViewModel = ViewModelProviders.of(this, pViewModelFactory).get(PhotoViewModel.class);
-        mDisposable.add(pViewModel.getPhotoUris(1)
+        mDisposable.add(pViewModel.getPhotoUris(tid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(photos -> {
@@ -136,7 +136,7 @@ public class SubTaskView extends AppCompatActivity {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(() -> {
                             },
-                            throwable -> Log.e(TAG, "Unable to add task", throwable)));
+                            throwable -> Log.e(TAG, "Unable to add photo", throwable)));
         }
             /*
             LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(

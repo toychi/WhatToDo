@@ -16,8 +16,8 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 public class Photo {
 
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "tid")
-    private int tid;
+    @ColumnInfo(name = "pid")
+    private int pid;
 
     @ColumnInfo(name = "task_id")
     private int task_id;
@@ -31,12 +31,12 @@ public class Photo {
         this.photoUri = photoUri;
     }
 
-    public int getTid() {
-        return tid;
+    public int getPid() {
+        return pid;
     }
 
-    public void setTid(int tid) {
-        this.tid = tid;
+    public void setPid(int pid) {
+        this.pid = pid;
     }
 
     public int getTask_id() {

@@ -16,7 +16,8 @@ public class PhotoAdapter extends BaseAdapter {
 
     public PhotoAdapter(Context appContext, ArrayList<String> item){
         this.mContext = appContext;
-        this.photoUri = new ArrayList<>(item);
+        this.photoUri = item;
+
     }
 
     @Override

@@ -74,7 +74,8 @@ public class DeskFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent SubTaskView = new Intent(getActivity(), com.example.toychi.whattodo.SubTaskView.class);
-                SubTaskView.putExtra("tid", adapter.getItemId(i));
+                long temp = adapter.getItemId(i);
+                SubTaskView.putExtra("tid", (int) temp);
                 startActivity(SubTaskView);
             }
         });

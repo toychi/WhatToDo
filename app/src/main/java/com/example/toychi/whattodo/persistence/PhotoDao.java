@@ -15,7 +15,7 @@ public interface PhotoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertPhoto(Photo photo);
 
-    @Query("SELECT * FROM photos WHERE tid = :tid")
+    @Query("SELECT * FROM photos WHERE task_id = :tid")
     Flowable<List<Photo>> getPhoto(int tid);
 
 }
