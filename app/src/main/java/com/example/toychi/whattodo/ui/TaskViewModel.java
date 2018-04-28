@@ -17,6 +17,7 @@ public class TaskViewModel extends ViewModel {
     private final TaskDataSource mDataSource;
 
     private ArrayList<String> taskNames;
+    private ArrayList<Task> tasks;
 
     public TaskViewModel(TaskDataSource dataSource) {
         mDataSource = dataSource;
@@ -36,6 +37,16 @@ public class TaskViewModel extends ViewModel {
                         taskNames.add(task.getTaskName());
                     }
                     return taskNames;
+                });
+    }
+
+    public Flowable<ArrayList<Task>> getTasks() {
+        return mDataSource.getAllTasks()
+                // for every emission of the user, get the user name
+                .map(list -> {
+                    tasks = new ArrayList<Task>();
+                    tasks.addAll(list);
+                    return tasks;
                 });
     }
 

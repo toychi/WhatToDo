@@ -1,5 +1,6 @@
 package com.example.toychi.whattodo;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -7,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,20 +18,29 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
+import com.example.toychi.whattodo.ui.TaskViewModel;
+import com.example.toychi.whattodo.ui.TaskViewModelFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
+
 public class DeskFragment extends Fragment {
 
     public ProgressListAdapter adapter;
 
+    // Room Database
+    private TaskViewModelFactory mViewModelFactory;
+    private TaskViewModel mViewModel;
+    private final CompositeDisposable mDisposable = new CompositeDisposable();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        adapter = new ProgressListAdapter(getActivity());
 
     }
 
@@ -45,10 +56,21 @@ public class DeskFragment extends Fragment {
         TextView textdate = view.findViewById(R.id.textdate);
         textdate.setText(formattedDate);
 
+        // (Task) Room Database
+        mViewModelFactory = Injection.provideTaskViewModelFactory(getActivity());
+        mViewModel = ViewModelProviders.of(this, mViewModelFactory).get(TaskViewModel.class);
+
         // Progress Bar Adapter
         ListView listView = view.findViewById(R.id.taskbox);
-        listView.setAdapter(adapter);
         listView.setDivider(null);
+        listView.setAdapter(adapter);
+        mDisposable.add(mViewModel.getTasks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(tasks -> {
+                    ProgressListAdapter tt = new ProgressListAdapter(getActivity(), tasks);
+                    listView.setAdapter(tt);
+                }, throwable -> Log.e("Error in Desk fragment", "Unable to load tasks", throwable)));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

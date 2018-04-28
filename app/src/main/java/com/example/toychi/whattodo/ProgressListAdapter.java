@@ -9,37 +9,33 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
+import com.example.toychi.whattodo.persistence.Task;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class ProgressListAdapter extends BaseAdapter {
 
     Context context;
     LayoutInflater inflter;
-    ArrayList<String> items = new ArrayList<String>();
     ArrayList<Integer> times = new ArrayList<Integer>();
     ArrayList<Integer> bars = new ArrayList<Integer>();
+    ArrayList<Task> tasks;
     String[] dummy = new String[]{"Wireless Project","HCI Project","DataSci Project","Essay","TRX","Security"};
     Integer[] dummy2 = new Integer[]{4,7,12,15,16,20};
     Integer[] dummy3 = new Integer[]{70,90,20,40,50,10};
 
-    public ProgressListAdapter(Context appContext){
+    public ProgressListAdapter(Context appContext, ArrayList<Task> tasks){
         this.context = appContext;
+        this.tasks = tasks;
         inflter = (LayoutInflater.from(appContext));
-        for (String temp: dummy) {
-            items.add(temp);
-        }
-        for (Integer temp: dummy2) {
-            times.add(temp);
-        }
-        for (Integer temp: dummy3) {
-            bars.add(temp);
-        }
     }
 
     @Override
     public int getCount() {
-        return items.size();
+        return tasks.size();
     }
 
     @Override
@@ -58,12 +54,39 @@ public class ProgressListAdapter extends BaseAdapter {
         TextView name = (TextView) view.findViewById(R.id.taskName);
         TextView time = (TextView) view.findViewById(R.id.timeLeft);
         RoundCornerProgressBar bar = (RoundCornerProgressBar) view.findViewById(R.id.progressBar);
-        name.setText(this.items.get(i));
-        time.setText(Integer.toString(this.times.get(i)) + " days left");
+        name.setText(this.tasks.get(i).getTaskName());
+        time.setText(Integer.toString(daysLeft(this.tasks.get(i).getDueDate())) + " days left");
         bar.setMax(100);
         bar.setPadding(1,1,1,1);
         bar.setProgressColor(Color.parseColor("#81d4fa"));
-        bar.setProgress(1.0f*this.bars.get(i));
+        bar.setProgress(50);
         return view;
+    }
+
+    public int daysLeft(String dueDate) {
+        int daysLeft = 0;
+        int monthDiff;
+        Calendar currDay = Calendar.getInstance();
+        Calendar day = Calendar.getInstance();
+
+        try {
+            day.setTime(new SimpleDateFormat("dd/MM/yy").parse(dueDate));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        if(day.after(currDay)){
+            monthDiff = day.get(Calendar.MONTH) - currDay.get(Calendar.MONTH) - 1;
+            if (monthDiff > 0) {
+                Calendar btwMonth = Calendar.getInstance();
+                for (int i = 0; i < monthDiff; i++) {
+                    btwMonth.add(Calendar.MONTH, 1);
+                    daysLeft += btwMonth.getActualMaximum(Calendar.DAY_OF_MONTH);
+                }
+            }
+            daysLeft += currDay.getActualMaximum(Calendar.DAY_OF_MONTH) - currDay.get(Calendar.DAY_OF_MONTH);
+            daysLeft += day.get(Calendar.DAY_OF_MONTH) - day.getActualMinimum(Calendar.DAY_OF_MONTH);
+        }
+        return daysLeft;
     }
 }

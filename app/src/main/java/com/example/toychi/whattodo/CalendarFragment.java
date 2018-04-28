@@ -106,9 +106,6 @@ public class CalendarFragment extends Fragment {
         selected_date.setText(month.get(Calendar.DATE) + " " + month.getDisplayName(Calendar.MONTH, Calendar.LONG, locale) + " " + month.get(Calendar.YEAR));
 
         simpleList = (ListView) view.findViewById(R.id.list);
-        // TaskListAdapter taskListAdapter = new TaskListAdapter(getContext(),new String[]{"a"});
-        // simpleList.setAdapter(taskListAdapter);
-
         // Subscribe to the emissions of the user name from the view model.
         // Update the user name text view, at every onNext emission.
         // In case of error, log the exception.
@@ -119,7 +116,6 @@ public class CalendarFragment extends Fragment {
                     TaskListAdapter tt = new TaskListAdapter(getActivity(), taskname);
                     simpleList.setAdapter(tt);
                 }, throwable -> Log.e("Error in Calendar activity", "Unable to load task", throwable)));
-
 
         return view;
     }
