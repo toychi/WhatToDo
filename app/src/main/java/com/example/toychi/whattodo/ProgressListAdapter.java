@@ -63,7 +63,7 @@ public class ProgressListAdapter extends BaseAdapter {
         return view;
     }
 
-    public int daysLeft(String dueDate) {
+    public static int daysLeft(String dueDate) {
         int daysLeft = 0;
         int monthDiff;
         // Current date

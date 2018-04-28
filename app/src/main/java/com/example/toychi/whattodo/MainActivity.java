@@ -2,7 +2,12 @@ package com.example.toychi.whattodo;
 
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.SystemClock;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -29,8 +34,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.toychi.whattodo.persistence.Task;
+import com.example.toychi.whattodo.NotificationPublisher;
 import com.example.toychi.whattodo.ui.TaskViewModel;
 import com.example.toychi.whattodo.ui.TaskViewModelFactory;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -150,6 +160,28 @@ public class MainActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void scheduleNotification(Notification notification, int delay, String dueDate) {
+        delay = 3600000;
+        if( ProgressListAdapter.daysLeft(dueDate) == 0 ){
+            Intent notificationIntent = new Intent(this, NotificationPublisher.class);
+            notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
+            notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            long futureInMillis = SystemClock.elapsedRealtime() + delay;
+            AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+        }
+
+    }
+
+    private Notification getNotification(String content) {
+        Notification.Builder builder = new Notification.Builder(this);
+        builder.setContentTitle("Scheduled Notification");
+        builder.setContentText(content);
+        return builder.build();
     }
     /*
 
