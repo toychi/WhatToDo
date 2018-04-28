@@ -88,6 +88,12 @@ public class TaskViewModel extends ViewModel {
         });
     }
 
+    public Completable deleteTask(int tid) {
+        return Completable.fromAction(() -> {
+            mDataSource.deleteTask(tid);
+        });
+    }
+
 
 
 }

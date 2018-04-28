@@ -55,10 +55,15 @@ public class SubTaskView extends AppCompatActivity {
     private static final String TAG = SubTaskView.class.getSimpleName();
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
-    // Room Database
+    // (Task) Room Database
+    private TaskViewModelFactory tViewModelFactory;
+    private TaskViewModel tViewModel;
+    private final CompositeDisposable tDisposable = new CompositeDisposable();
+
+    // (Photo) Room Database
     private PhotoViewModelFactory pViewModelFactory;
     private PhotoViewModel pViewModel;
-    private final CompositeDisposable mDisposable = new CompositeDisposable();
+    private final CompositeDisposable pDisposable = new CompositeDisposable();
 
     int tid;
     Uri testUri;
@@ -87,11 +92,15 @@ public class SubTaskView extends AppCompatActivity {
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1024);
         }
 
+        // (Task) Room Database
+        tViewModelFactory = Injection.provideTaskViewModelFactory(this);
+        tViewModel = ViewModelProviders.of(this, tViewModelFactory).get(TaskViewModel.class);
+
         gridView = findViewById(R.id.gridview);
         // (Photo) Room Database
         pViewModelFactory = Injection.providePhotoViewModelFactory(this);
         pViewModel = ViewModelProviders.of(this, pViewModelFactory).get(PhotoViewModel.class);
-        mDisposable.add(pViewModel.getPhotoUris(tid)
+        pDisposable.add(pViewModel.getPhotoUris(tid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(photos -> {
@@ -141,7 +150,7 @@ public class SubTaskView extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            mDisposable.add(pViewModel.addPhoto(tid, testUri.toString())
+            pDisposable.add(pViewModel.addPhoto(tid, testUri.toString())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(() -> {
@@ -210,6 +219,38 @@ public class SubTaskView extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_subtaskview, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.delete) {
+            tDisposable.add(tViewModel.deleteTask(tid)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(() -> {
+                            },
+                            throwable -> Log.e(TAG, "Unable to delete task", throwable)));
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        // clear all the subscriptions
+        pDisposable.clear();
+        tDisposable.clear();
     }
 
 }
