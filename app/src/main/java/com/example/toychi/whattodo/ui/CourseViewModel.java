@@ -8,6 +8,7 @@ import com.example.toychi.whattodo.persistence.Task;
 
 import java.util.ArrayList;
 
+import io.reactivex.Completable;
 import io.reactivex.Flowable;
 
 public class CourseViewModel extends ViewModel {
@@ -47,5 +48,18 @@ public class CourseViewModel extends ViewModel {
                     }
                     return courseIds.get(position);
                 });
+    }
+
+    /**
+     * Update the task.
+     *
+     * @param
+     * @return a {@link Completable} that completes when the user name is updated
+     */
+    public Completable addCourse(String courseName) {
+        return Completable.fromAction(() -> {
+            Course mCourse = new Course(courseName);
+            mDataSource.insertOrUpdateCourse(mCourse);
+        });
     }
 }

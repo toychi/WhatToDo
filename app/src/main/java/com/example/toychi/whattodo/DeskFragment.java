@@ -89,9 +89,16 @@ public class DeskFragment extends Fragment {
             }
         });
 
-
-
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        // clear all the subscriptions
+        mDisposable.clear();
+
     }
 
 }
