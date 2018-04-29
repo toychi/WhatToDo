@@ -62,6 +62,8 @@ public class SubTaskView extends AppCompatActivity {
     private static final String TAG = SubTaskView.class.getSimpleName();
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
+    AlertDialog DelSubtaskDialog;
+
     private Context context = this;
 
     // (Task) Room Database
@@ -152,6 +154,38 @@ public class SubTaskView extends AppCompatActivity {
                     simpleList.setAdapter(tt);
                 }, throwable -> Log.e("Error in Subtask activity", "Unable to load tasks", throwable)));
 
+
+        simpleList.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                longclick();
+                return true;
+            }
+
+            private void longclick() {
+                AlertDialog.Builder DelSubtaskDialogBuilder = new AlertDialog.Builder(SubTaskView.this);
+                DelSubtaskDialogBuilder.setTitle("Are you sure to delete this subtask?");
+                // In case they want to delete subtask
+                DelSubtaskDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+
+                    }});
+                // In case they don't want to delete subtask
+                DelSubtaskDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+
+                // Display a dialog
+                DelSubtaskDialog = DelSubtaskDialogBuilder.create();
+                DelSubtaskDialog.show();
+
+            }
+        });
+
         //Progress bar
         RoundCornerProgressBar progressBar = findViewById(R.id.RoundPg);
         progressBar.setMax(7);
@@ -197,7 +231,11 @@ public class SubTaskView extends AppCompatActivity {
                         })
                         .show();
             }
+
         });
+
+        }
+
 
         //In-Progress
         /*ListView In_Progress = findViewById(R.id.InProgressList);
@@ -212,7 +250,7 @@ public class SubTaskView extends AppCompatActivity {
         ListView Completed = findViewById(R.id.CompletedList);
         */
 
-    }
+
 
     public void onCheckboxClicked(View view) {
         // Is the view now checked?
