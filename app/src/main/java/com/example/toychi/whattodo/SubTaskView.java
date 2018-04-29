@@ -1,9 +1,11 @@
 package com.example.toychi.whattodo;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -18,11 +20,13 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.text.Layout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -35,6 +39,8 @@ import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.example.toychi.whattodo.persistence.Task;
 import com.example.toychi.whattodo.ui.PhotoViewModel;
 import com.example.toychi.whattodo.ui.PhotoViewModelFactory;
+import com.example.toychi.whattodo.ui.SubtaskViewModel;
+import com.example.toychi.whattodo.ui.SubtaskViewModelFactory;
 import com.example.toychi.whattodo.ui.TaskViewModel;
 import com.example.toychi.whattodo.ui.TaskViewModelFactory;
 
@@ -55,10 +61,17 @@ public class SubTaskView extends AppCompatActivity {
     private static final String TAG = SubTaskView.class.getSimpleName();
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
+    private Context context = this;
+
     // (Task) Room Database
     private TaskViewModelFactory tViewModelFactory;
     private TaskViewModel tViewModel;
     private final CompositeDisposable tDisposable = new CompositeDisposable();
+
+    // (Subtask) Room Database
+    private SubtaskViewModelFactory sViewModelFactory;
+    private SubtaskViewModel sViewModel;
+    private final CompositeDisposable sDisposable = new CompositeDisposable();
 
     // (Photo) Room Database
     private PhotoViewModelFactory pViewModelFactory;
@@ -99,6 +112,10 @@ public class SubTaskView extends AppCompatActivity {
         tViewModelFactory = Injection.provideTaskViewModelFactory(this);
         tViewModel = ViewModelProviders.of(this, tViewModelFactory).get(TaskViewModel.class);
 
+        // (Subtask) Room Database
+        sViewModelFactory = Injection.provideSubtaskViewModelFactory(this);
+        sViewModel = ViewModelProviders.of(this, sViewModelFactory).get(SubtaskViewModel.class);
+
         gridView = findViewById(R.id.gridview);
         // (Photo) Room Database
         pViewModelFactory = Injection.providePhotoViewModelFactory(this);
@@ -126,7 +143,7 @@ public class SubTaskView extends AppCompatActivity {
 
         simpleList = (ListView) findViewById(R.id.subtaskList);
 
-        tDisposable.add(tViewModel.getTaskNames()
+        sDisposable.add(sViewModel.getSubtasksName(tid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(taskname -> {
@@ -148,6 +165,36 @@ public class SubTaskView extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 dispatchTakePictureIntent();
+            }
+        });
+
+        FloatingActionButton AddsubtaskBut = findViewById(R.id.addSubtaskButton);
+        AddsubtaskBut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EditText input = new EditText(context);
+                new AlertDialog.Builder(context)
+                        .setTitle("Add Subtask")
+                        .setView(input)
+                        .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String m_Text = input.getText().toString();
+                                sDisposable.add(sViewModel.addTask(tid, m_Text)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(() -> {
+                                                },
+                                                throwable -> Log.e(TAG, "Unable to add subtask", throwable)));
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        })
+                        .show();
             }
         });
 

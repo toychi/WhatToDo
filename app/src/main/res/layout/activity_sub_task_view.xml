@@ -27,7 +27,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_menu_camera" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/addSubtaskButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="170dp"
+        android:layout_marginEnd="32dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_add" />
+
     <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
@@ -101,15 +113,15 @@
             android:id="@+id/subtasktextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginVertical="4dp"
+            android:background="@color/colorPrimaryLight"
             android:paddingBottom="2dp"
             android:paddingEnd="8dp"
             android:paddingStart="8dp"
             android:paddingTop="2dp"
-            android:layout_marginVertical="4dp"
             android:text="Subtasks"
-            android:textSize="16sp"
             android:textColor="@color/colorWhite"
-            android:background="@color/colorPrimaryLight" />
+            android:textSize="16sp" />
 
 
         <ListView
@@ -121,15 +133,15 @@
             android:id="@+id/phototextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginVertical="4dp"
+            android:background="@color/colorPrimaryLight"
             android:paddingBottom="2dp"
             android:paddingEnd="8dp"
             android:paddingStart="8dp"
             android:paddingTop="2dp"
-            android:layout_marginVertical="4dp"
             android:text="Photos"
-            android:textSize="16sp"
             android:textColor="@color/colorWhite"
-            android:background="@color/colorPrimaryLight" />
+            android:textSize="16sp" />
 
         <GridView
             android:id="@+id/gridview"
@@ -137,8 +149,8 @@
             android:layout_height="match_parent"
             android:columnWidth="90dp"
             android:numColumns="auto_fit"
-            android:verticalSpacing="4dp"
-            android:stretchMode="columnWidth" />
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="4dp" />
 
     </LinearLayout>
 

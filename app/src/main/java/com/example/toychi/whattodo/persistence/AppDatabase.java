@@ -9,7 +9,7 @@ import android.support.annotation.NonNull;
 
 import java.util.concurrent.Executors;
 
-@Database(version = 1, entities = {Task.class, Course.class, Photo.class})
+@Database(version = 1, entities = {Task.class, Course.class, Photo.class, Subtask.class})
 public abstract class AppDatabase extends RoomDatabase {
 
     private static volatile AppDatabase INSTANCE;
@@ -17,6 +17,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract TaskDao taskDao();
     public abstract CourseDao courseDao();
     public abstract PhotoDao photoDao();
+    public abstract SubtaskDao subtaskDao();
 
     public static AppDatabase getInstance(Context context){
         if (INSTANCE == null) {
