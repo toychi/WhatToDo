@@ -47,6 +47,7 @@ public class CalendarAdapter extends BaseAdapter {
     private ArrayList<String> items;
     public static List<String> dayString;
     private View previousView;
+    private String previousDate;
 
     public CalendarAdapter(Context c, GregorianCalendar monthCalendar) {
         CalendarAdapter.dayString = new ArrayList<String>();
@@ -112,7 +113,7 @@ public class CalendarAdapter extends BaseAdapter {
         String monthvalue = separatedTime[1].replaceFirst("^0*", "");
         if (dayString.get(position).equals(curentDateString)
                 && Integer.parseInt(monthvalue) == (month.get(Calendar.MONTH) + 1)) {
-            setSelected(v);
+            setSelected(v, separatedTime);
             previousView = v;
         } else {
             // v.setBackgroundResource(R.drawable.list_item_background);
@@ -140,13 +141,17 @@ public class CalendarAdapter extends BaseAdapter {
 
     }
 
-    public View setSelected(View view) {
+    public View setSelected(View view, String[] separatedTime) {
+        String date = separatedTime[2] + "/" + separatedTime[1] + "/" + separatedTime[0].substring(2);
         if (previousView != null) {
             // previousView.setBackgroundResource(R.drawable.list_item_background);
             ((TextView) previousView.findViewById(R.id.date)).setTextColor(Color.BLUE);
             previousView.setBackgroundColor(Color.parseColor("#ffffff"));
+            if (items.contains(previousDate))
+                previousView.findViewById(R.id.date_icon).setVisibility(View.VISIBLE);
         }
         previousView = view;
+        previousDate = date;
         // view.setBackgroundResource(R.drawable.calendar_cel_selectl);
         ((TextView) view.findViewById(R.id.date)).setTextColor(Color.WHITE);
         // view.setBackgroundResource(R.color.colorAccent);

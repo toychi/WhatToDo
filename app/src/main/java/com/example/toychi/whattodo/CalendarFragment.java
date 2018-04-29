@@ -61,7 +61,6 @@ public class CalendarFragment extends Fragment {
         items = new ArrayList<String>();
         adapter = new CalendarAdapter(getActivity(),(GregorianCalendar) month);
 
-
         // (Task) Room Database
         mViewModelFactory = Injection.provideTaskViewModelFactory(getActivity());
         mViewModel = ViewModelProviders.of(this, mViewModelFactory).get(TaskViewModel.class);
@@ -83,10 +82,10 @@ public class CalendarFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
 
-                ((CalendarAdapter) parent.getAdapter()).setSelected(v);
                 String selectedGridDate = CalendarAdapter.dayString
                         .get(position);
                 String[] separatedTime = selectedGridDate.split("-");
+                ((CalendarAdapter) parent.getAdapter()).setSelected(v, separatedTime);
                 String gridvalueString = separatedTime[2].replaceFirst("^0*",
                         "");// taking last part of date. ie; 2 from 2012-12-02.
                 int gridvalue = Integer.parseInt(gridvalueString);
@@ -102,7 +101,7 @@ public class CalendarFragment extends Fragment {
                 } else {
                     title.insert(0,gridvalueString + " ");
                 }
-                ((CalendarAdapter) parent.getAdapter()).setSelected(v);
+                ((CalendarAdapter) parent.getAdapter()).setSelected(v, separatedTime);
 
                 showToast(selectedGridDate);
                 selected_date.setText(title.toString());
