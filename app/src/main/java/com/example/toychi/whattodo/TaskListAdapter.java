@@ -16,8 +16,11 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.example.toychi.whattodo.persistence.Subtask;
+import com.example.toychi.whattodo.persistence.Task;
 import com.example.toychi.whattodo.ui.SubtaskViewModel;
 import com.example.toychi.whattodo.ui.SubtaskViewModelFactory;
+import com.example.toychi.whattodo.ui.TaskViewModel;
+import com.example.toychi.whattodo.ui.TaskViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,11 +38,17 @@ public class TaskListAdapter extends BaseAdapter {
     String[] item = new String[]{"Wireless Project", "HCI Project", "DataSci Project", "Essay", "TRX", "Security"};
     LayoutInflater inflter;
     private boolean[] mChecked;
-    ArrayList<Subtask> subtasks;
+    ArrayList tasks;
+
+    private int type = 0; // Task
 
     // (Subtask) Room Database
     private SubtaskViewModel sViewModel;
     private final CompositeDisposable sDisposable = new CompositeDisposable();
+
+    // (Task) Room Database
+    private TaskViewModel mViewModel;
+    private final CompositeDisposable mDisposable = new CompositeDisposable();
 
 
     private List<String> arrayList = new ArrayList<>(30);
@@ -59,10 +68,10 @@ public class TaskListAdapter extends BaseAdapter {
 
     public TaskListAdapter(Context appContext, ArrayList<Subtask> item, int type, SubtaskViewModel viewModel) {
         this.context = appContext;
-        this.subtasks = new ArrayList<Subtask>();
+        this.tasks = new ArrayList<Subtask>();
         this.taskList = new ArrayList<String>();
         for (int i = 0; i < item.size(); i++) {
-            this.subtasks.add(item.get(i));
+            this.tasks.add(item.get(i));
             this.taskList.add(item.get(i).getSubtaskName());
             if (item.get(i).getComplete() == 0) {
                 mItemChecked[i] = false;
@@ -72,6 +81,24 @@ public class TaskListAdapter extends BaseAdapter {
         }
         // (Subtask) Room Database
         sViewModel = viewModel;
+        this.type = type;
+    }
+
+    public TaskListAdapter(Context appContext, ArrayList<Task> item, TaskViewModel viewModel) {
+        this.context = appContext;
+        this.tasks = new ArrayList<Task>();
+        this.taskList = new ArrayList<String>();
+        for (int i = 0; i < item.size(); i++) {
+            this.tasks.add(item.get(i));
+            this.taskList.add(item.get(i).getTaskName());
+            if (item.get(i).getComplete() == 0) {
+                mItemChecked[i] = false;
+            } else {
+                mItemChecked[i] = true;
+            }
+        }
+        // (Task) Room Database
+        mViewModel = viewModel;
     }
 
     @Override
@@ -98,7 +125,12 @@ public class TaskListAdapter extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
 
         final ViewHolder holder;
-        Subtask temp = subtasks.get(i);
+        Object temp;
+        if (type == 0) {
+            temp = (Task) tasks.get(i);
+        } else {
+            temp = (Subtask) tasks.get(i);
+        }
         inflter = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (view == null) {
@@ -110,7 +142,11 @@ public class TaskListAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) view.getTag();
         }
-        holder.tv.setText(temp.getSubtaskName());
+        if (type == 0) {
+            holder.tv.setText(((Task) tasks.get(i)).getTaskName());
+        } else {
+            holder.tv.setText(((Subtask) tasks.get(i)).getSubtaskName());
+        }
         //Important to remove previous listener before calling setChecked
         holder.cb.setOnCheckedChangeListener(null);
         holder.cb.setChecked(mItemChecked[i]);
@@ -121,12 +157,23 @@ public class TaskListAdapter extends BaseAdapter {
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         mItemChecked[i] = isChecked;
                         int complete = isChecked ? 1 : 0;
-                        sDisposable.add(sViewModel.updateTask(temp.getStid(), temp.getTask_id(), temp.getSubtaskName(), complete)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(() -> {
-                                        },
-                                        throwable -> Log.e(TAG, "Unable to add subtask", throwable)));
+                        if (type == 0) {
+                            mDisposable.add(mViewModel.updateTask(((Task) temp).getTid(), ((Task) temp).getCourse_id(), ((Task) temp).getTaskName(),
+                                    ((Task) temp).getTaskDescription(), ((Task) temp).getDueDate(), ((Task) temp).getDueTime(), complete)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(() -> {
+                                            },
+                                            throwable -> Log.e(TAG, "Unable to update task", throwable)));
+                        } else {
+                            sDisposable.add(sViewModel.updateTask(((Subtask) temp).getStid(), ((Subtask) temp).getTask_id(),
+                                    ((Subtask) temp).getSubtaskName(), complete)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(() -> {
+                                            },
+                                            throwable -> Log.e(TAG, "Unable to update subtask", throwable)));
+                        }
                     }
                 });
         

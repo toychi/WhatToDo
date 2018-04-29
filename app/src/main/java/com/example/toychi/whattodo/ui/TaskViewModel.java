@@ -58,15 +58,13 @@ public class TaskViewModel extends ViewModel {
                 });
     }
 
-    public Flowable<ArrayList<String>> getTasksByDate(String dueDate) {
+    public Flowable<ArrayList<Task>> getTasksByDate(String dueDate) {
         return mDataSource.getTasksByDate(dueDate)
                 // for every emission of the user, get the user name
                 .map(list -> {
-                    taskNames = new ArrayList<String>();
-                    for (Task task:list) {
-                        taskNames.add(task.getTaskName());
-                    }
-                    return taskNames;
+                    tasks = new ArrayList<Task>();
+                    tasks.addAll(list);
+                    return tasks;
                 });
     }
 
@@ -76,9 +74,9 @@ public class TaskViewModel extends ViewModel {
      * @param
      * @return a {@link Completable} that completes when the user name is updated
      */
-    public Completable updateTaskName(int tid, int course_id, String taskName, String taskDescription, String dueDate, String dueTime) {
+    public Completable updateTask(int tid, int course_id, String taskName, String taskDescription, String dueDate, String dueTime, int complete) {
         return Completable.fromAction(() -> {
-            Task mTask = new Task(tid, course_id, taskName, taskDescription, dueDate, dueTime);
+            Task mTask = new Task(tid, course_id, taskName, taskDescription, dueDate, dueTime, complete);
             mDataSource.insertOrUpdateTask(mTask);
         });
     }

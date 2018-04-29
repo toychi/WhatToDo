@@ -151,50 +151,10 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-    /*
 
-    private void setViewModel(){
-        mViewModelFactory = Injection.provideViewModelFactory(this);
+    public void onCheckboxClicked(View view) {
+        // Is the view now checked?
 
-        mViewModelFactory = Injection.provideViewModelFactory(this);
-        mViewModel = ViewModelProviders.of(this, mViewModelFactory).get(TaskViewModel.class);
-        mUpdateButton.setOnClickListener(v -> updateTaskName());
     }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // Subscribe to the emissions of the user name from the view model.
-        // Update the user name text view, at every onNext emission.
-        // In case of error, log the exception.
-        mDisposable.add(mViewModel.getOne()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(userName -> mUserName.setText(userName),
-                        throwable -> Log.e(TAG, "Unable to update username", throwable)));
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        // clear all the subscriptions
-        mDisposable.clear();
-    }
-
-    private void updateTaskName() {
-        String taskName = mTaskNameInput.getText().toString();
-        // Disable the update button until the user name update has been done
-        mUpdateButton.setEnabled(false);
-        // Subscribe to updating the user name.
-        // Re-enable the button once the user name has been updated
-        mDisposable.add(mViewModel.updateUserName(taskName)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(() -> mUpdateButton.setEnabled(true),
-                        throwable -> Log.e(TAG, "Unable to update username", throwable)));
-    }
-
-    */
 
 }

@@ -63,6 +63,17 @@ public class Task {
         this.complete = 0;
     }
 
+    @Ignore
+    public Task(int tid, int course_id, String taskName, String taskDescription, String dueDate, String dueTime, int complete) {
+        this.tid = tid;
+        this.course_id = course_id;
+        this.taskName = taskName;
+        this.taskDescription = taskDescription;
+        this.dueDate = dueDate;
+        this.dueTime = dueTime;
+        this.complete = complete;
+    }
+
     @NonNull
     public String getTaskName() {
         return taskName;

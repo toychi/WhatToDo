@@ -110,8 +110,8 @@ public class CalendarFragment extends Fragment {
                 mDisposable.add(mViewModel.getTasksByDate(dueDate)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(taskname -> {
-                            TaskListAdapter tt = new TaskListAdapter(getActivity(), taskname);
+                        .subscribe(tasks -> {
+                            TaskListAdapter tt = new TaskListAdapter(getActivity(), tasks, mViewModel);
                             simpleList.setAdapter(tt);
                         }, throwable -> Log.e("Error in Calendar activity", "Unable to load task", throwable)));
 
@@ -130,11 +130,11 @@ public class CalendarFragment extends Fragment {
         // Subscribe to the emissions of the user name from the view model.
         // Update the user name text view, at every onNext emission.
         // In case of error, log the exception.
-        mDisposable.add(mViewModel.getTaskNames()
+        mDisposable.add(mViewModel.getTasks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(taskname -> {
-                    TaskListAdapter tt = new TaskListAdapter(getActivity(), taskname);
+                .subscribe(tasks -> {
+                    TaskListAdapter tt = new TaskListAdapter(getActivity(), tasks, mViewModel);
                     simpleList.setAdapter(tt);
                 }, throwable -> Log.e("Error in Calendar activity", "Unable to load task", throwable)));
         return view;
