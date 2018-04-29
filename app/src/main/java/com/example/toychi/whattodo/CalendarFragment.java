@@ -2,6 +2,7 @@ package com.example.toychi.whattodo;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,10 +15,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.toychi.whattodo.persistence.Task;
 import com.example.toychi.whattodo.ui.TaskViewModel;
 import com.example.toychi.whattodo.ui.TaskViewModelFactory;
 
+import java.text.DateFormat;
 import java.text.DateFormatSymbols;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
@@ -28,9 +33,12 @@ import io.reactivex.schedulers.Schedulers;
 
 public class CalendarFragment extends Fragment {
 
-    public Calendar month; // Calendar instances
+    public Calendar month, itemmonth; // Calendar instances
     public CalendarAdapter adapter; // Adapter instance
     public ListView simpleList; // Task list
+
+    public Handler handler;// for grabbing some event values for showing the dot marker.
+    public ArrayList<String> items; // container to store calendar items which needs showing the event marker.
 
     DateFormatSymbols dfs = new DateFormatSymbols();
     final private String[] months = dfs.getMonths(); // Months strings
@@ -49,7 +57,10 @@ public class CalendarFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         month = Calendar.getInstance();
+        itemmonth = (Calendar) month.clone();
+        items = new ArrayList<String>();
         adapter = new CalendarAdapter(getActivity(),(GregorianCalendar) month);
+
 
         // (Task) Room Database
         mViewModelFactory = Injection.provideTaskViewModelFactory(getActivity());
@@ -67,6 +78,7 @@ public class CalendarFragment extends Fragment {
 
         GridView gridview = view.findViewById(R.id.gridview);
         gridview.setAdapter(adapter);
+        updateEvents();
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
@@ -178,11 +190,25 @@ public class CalendarFragment extends Fragment {
     public void refreshCalendar() {
         adapter.refreshDays();
         adapter.notifyDataSetChanged();
-        //handler.post(calendarUpdater); // generate some calendar items
+        updateEvents();
+
 
         title.setText(android.text.format.DateFormat.format("MMMM yyyy", month));
 
         selected_date.setText(android.text.format.DateFormat.format("MMMM yyyy", month));
+    }
+
+    public void updateEvents() {
+        mDisposable.add(mViewModel.getTasks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(tasklist -> {
+                    for (Task temp:tasklist) {
+                        items.add(temp.getDueDate());
+                    }
+                    adapter.setItems(items);
+                    adapter.notifyDataSetChanged();
+                }, throwable -> Log.e("Error in Calendar activity", "Unable to load task date", throwable)));
     }
 
     @Override

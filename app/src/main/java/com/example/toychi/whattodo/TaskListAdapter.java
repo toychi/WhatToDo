@@ -42,8 +42,6 @@ public class TaskListAdapter extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
         view = inflter.inflate(R.layout.task_item, null);
         TextView item = (TextView) view.findViewById(R.id.textView4);
-        ImageView image = (ImageView) view.findViewById(R.id.imageView);
-        image.setImageResource(R.drawable.ic_launcher_background);
         item.setText(this.taskList.get(i));
         return view;
     }

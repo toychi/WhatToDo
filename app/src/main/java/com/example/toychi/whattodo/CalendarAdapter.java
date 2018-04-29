@@ -14,6 +14,7 @@ import android.widget.TextView;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
@@ -60,11 +61,6 @@ public class CalendarAdapter extends BaseAdapter {
     }
 
     public void setItems(ArrayList<String> items) {
-        for (int i = 0; i != items.size(); i++) {
-            if (items.get(i).length() == 1) {
-                items.set(i, "0" + items.get(i));
-            }
-        }
         this.items = items;
     }
 
@@ -113,7 +109,9 @@ public class CalendarAdapter extends BaseAdapter {
             dayView.setTextColor(Color.BLUE);
         }
 
-        if (dayString.get(position).equals(curentDateString)) {
+        String monthvalue = separatedTime[1].replaceFirst("^0*", "");
+        if (dayString.get(position).equals(curentDateString)
+                && Integer.parseInt(monthvalue) == (month.get(Calendar.MONTH) + 1)) {
             setSelected(v);
             previousView = v;
         } else {
@@ -123,25 +121,21 @@ public class CalendarAdapter extends BaseAdapter {
         dayView.setText(gridvalue);
 
         // create date string for comparison
-        String date = dayString.get(position);
-
-        if (date.length() == 1) {
-            date = "0" + date;
-        }
-        String monthStr = "" + (month.get(GregorianCalendar.MONTH) + 1);
-        if (monthStr.length() == 1) {
-            monthStr = "0" + monthStr;
-        }
+        String date = separatedTime[2] + "/" + separatedTime[1] + "/" + separatedTime[0].substring(2);
 
         // show icon if date is not empty and it exists in the items array
-        /*
         ImageView iw = (ImageView) v.findViewById(R.id.date_icon);
         if (date.length() > 0 && items != null && items.contains(date)) {
             iw.setVisibility(View.VISIBLE);
         } else {
             iw.setVisibility(View.INVISIBLE);
         }
-        */
+
+        if ((Integer.parseInt(gridvalue) > 1) && (position < firstDay)
+                || (Integer.parseInt(gridvalue) < 7) && (position > 28)) {
+            iw.setVisibility(View.INVISIBLE);
+        }
+
         return v;
 
     }
@@ -156,6 +150,7 @@ public class CalendarAdapter extends BaseAdapter {
         // view.setBackgroundResource(R.drawable.calendar_cel_selectl);
         ((TextView) view.findViewById(R.id.date)).setTextColor(Color.WHITE);
         // view.setBackgroundResource(R.color.colorAccent);
+        view.findViewById(R.id.date_icon).setVisibility(View.INVISIBLE);
         view.setBackgroundResource(R.drawable.shape_circle_bg);
         return view;
     }
