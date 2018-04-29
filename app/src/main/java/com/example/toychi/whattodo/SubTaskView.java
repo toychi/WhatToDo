@@ -37,8 +37,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
-import com.example.toychi.whattodo.persistence.Task;
+
 import com.example.toychi.whattodo.ui.PhotoViewModel;
 import com.example.toychi.whattodo.ui.PhotoViewModelFactory;
 import com.example.toychi.whattodo.ui.SubtaskViewModel;
@@ -155,14 +154,6 @@ public class SubTaskView extends AppCompatActivity {
                     simpleList.setAdapter(tt);
                 }, throwable -> Log.e("Error in Subtask activity", "Unable to load tasks", throwable)));
 
-        //Progress bar
-        RoundCornerProgressBar progressBar = findViewById(R.id.RoundPg);
-        progressBar.setMax(7);
-        progressBar.setProgress(3);
-        //Percent
-        TextView TaskPercent = findViewById(R.id.TaskPercent);
-        String TaskPc = String.valueOf(Math.round(progressBar.getProgress() / progressBar.getMax() * 100));
-        TaskPercent.setText(TaskPc + "%");
 
         FloatingActionButton CameraBut = findViewById(R.id.CameraBut);
         CameraBut.setOnClickListener(new View.OnClickListener() {

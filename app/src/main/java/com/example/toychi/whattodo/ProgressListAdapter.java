@@ -52,14 +52,18 @@ public class ProgressListAdapter extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
         view = inflter.inflate(R.layout.progress_task_item, null);
         TextView name = (TextView) view.findViewById(R.id.taskName);
+        name.setTextSize(20);
+        name.setTextColor(Color.parseColor("#0e12f9"));
         TextView time = (TextView) view.findViewById(R.id.timeLeft);
+        time.setTextSize(17);
+        time.setTextColor(Color.parseColor("#f40c36"));
         RoundCornerProgressBar bar = (RoundCornerProgressBar) view.findViewById(R.id.progressBar);
         name.setText(this.tasks.get(i).getTaskName());
         time.setText(Integer.toString(daysLeft(this.tasks.get(i).getDueDate())) + " days left");
         bar.setMax(100);
         bar.setPadding(1,1,1,1);
-        bar.setProgressColor(Color.parseColor("#81d4fa"));
-        bar.setProgress(50);
+        bar.setProgressColor(Color.parseColor("#afffff"));
+        bar.setProgress(100);
         return view;
     }
 
