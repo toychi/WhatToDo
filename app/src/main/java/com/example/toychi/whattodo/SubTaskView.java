@@ -26,6 +26,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -143,11 +144,11 @@ public class SubTaskView extends AppCompatActivity {
 
         simpleList = (ListView) findViewById(R.id.subtaskList);
 
-        sDisposable.add(sViewModel.getSubtasksName(tid)
+        sDisposable.add(sViewModel.getSubtasks(tid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(taskname -> {
-                    TaskListAdapter tt = new TaskListAdapter(this, taskname);
+                .subscribe(subtasks -> {
+                    TaskListAdapter tt = new TaskListAdapter(this, subtasks,1,sViewModel);
                     simpleList.setAdapter(tt);
                 }, throwable -> Log.e("Error in Subtask activity", "Unable to load tasks", throwable)));
 
@@ -210,6 +211,13 @@ public class SubTaskView extends AppCompatActivity {
         //Completed
         ListView Completed = findViewById(R.id.CompletedList);
         */
+
+    }
+
+    public void onCheckboxClicked(View view) {
+        // Is the view now checked?
+        boolean checked = ((CheckBox) view).isChecked();
+        System.out.println(view.getContext());
 
     }
 
@@ -325,6 +333,7 @@ public class SubTaskView extends AppCompatActivity {
         // clear all the subscriptions
         pDisposable.clear();
         tDisposable.clear();
+        sDisposable.clear();
     }
 
 }

@@ -160,6 +160,7 @@
             android:id="@+id/list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:descendantFocusability="afterDescendants"
             app:layout_constraintTop_toTopOf="@id/calendar_view" />
     </LinearLayout>
 

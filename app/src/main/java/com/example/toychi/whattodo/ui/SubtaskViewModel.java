@@ -58,6 +58,13 @@ public class SubtaskViewModel extends ViewModel {
         });
     }
 
+    public Completable updateTask(int sid, int task_id, String subtaskName, int complete) {
+        return Completable.fromAction(() -> {
+            Subtask subtask = new Subtask(sid, task_id, subtaskName, complete);
+            mDataSource.insertSubTask(subtask);
+        });
+    }
+
     public Completable deleteSubtask(int stid) {
         return Completable.fromAction(() -> {
             mDataSource.deleteSubtask(stid);

@@ -40,6 +40,14 @@ public class Subtask {
         this.complete = 0;
     }
 
+    @Ignore
+    public Subtask(int stid, int task_id, String subtaskName, int complete) {
+        this.stid = stid;
+        this.task_id = task_id;
+        this.subtaskName = subtaskName;
+        this.complete = complete;
+    }
+
     public int getStid() {
         return stid;
     }
