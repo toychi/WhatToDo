@@ -1,12 +1,15 @@
 package com.example.toychi.whattodo;
 
+import android.app.AlertDialog;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -25,6 +28,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public class TaskListAdapter extends BaseAdapter {
     private static final String TAG = TaskListAdapter.class.getSimpleName();
+    AlertDialog DelSubtaskDialog;
 
     Context context;
     ArrayList<String> taskList;
@@ -60,7 +64,6 @@ public class TaskListAdapter extends BaseAdapter {
         for (int i = 0; i < item.size(); i++) {
             this.subtasks.add(item.get(i));
             this.taskList.add(item.get(i).getSubtaskName());
-            System.out.println(this.taskList.get(i));
             if (item.get(i).getComplete() == 0) {
                 mItemChecked[i] = false;
             } else {
@@ -126,6 +129,36 @@ public class TaskListAdapter extends BaseAdapter {
                                         throwable -> Log.e(TAG, "Unable to add subtask", throwable)));
                     }
                 });
+        
+        view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                longclick();
+                return true;
+            }
+            private void longclick() {
+                AlertDialog.Builder DelSubtaskDialogBuilder = new AlertDialog.Builder(context);
+                DelSubtaskDialogBuilder.setTitle("Are you sure to delete this subtask?");
+                // In case they want to delete subtask
+                DelSubtaskDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+
+                    }});
+                // In case they don't want to delete subtask
+                DelSubtaskDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+
+                // Display a dialog
+                DelSubtaskDialog = DelSubtaskDialogBuilder.create();
+                DelSubtaskDialog.show();
+
+            }
+        });
         return view;
     }
 
