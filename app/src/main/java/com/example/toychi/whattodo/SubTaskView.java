@@ -69,6 +69,9 @@ public class SubTaskView extends AppCompatActivity {
     Uri testUri;
     GridView gridView;
 
+    // Subtask list
+    public ListView simpleList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,12 +111,29 @@ public class SubTaskView extends AppCompatActivity {
                     gridView.setAdapter(tt);
                 }, throwable -> Log.e("Error in Task View", "Unable to load photos", throwable)));
 
-        //Task nname
+        //Task name
         TextView TaskNum = findViewById(R.id.TaskNum);
-        TaskNum.setText("Task 1");
         //DueDate
         TextView DueDate = findViewById(R.id.DueDate);
-        DueDate.setText("Due on:");
+
+        tDisposable.add(tViewModel.getTask(tid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(task -> {
+                    TaskNum.setText(task.getTaskName());
+                    DueDate.setText("Due on: " + task.getDueDate());
+                }, throwable -> Log.e("Error in Task View", "Unable to load task", throwable)));
+
+        simpleList = (ListView) findViewById(R.id.subtaskList);
+
+        tDisposable.add(tViewModel.getTaskNames()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(taskname -> {
+                    TaskListAdapter tt = new TaskListAdapter(this, taskname);
+                    simpleList.setAdapter(tt);
+                }, throwable -> Log.e("Error in Subtask activity", "Unable to load tasks", throwable)));
+
         //Progress bar
         RoundCornerProgressBar progressBar = findViewById(R.id.RoundPg);
         progressBar.setMax(7);
@@ -156,6 +176,13 @@ public class SubTaskView extends AppCompatActivity {
                     .subscribe(() -> {
                             },
                             throwable -> Log.e(TAG, "Unable to add photo", throwable)));
+            pDisposable.add(pViewModel.getPhotoUris(tid)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(photos -> {
+                        PhotoAdapter tt = new PhotoAdapter(this, photos);
+                        gridView.setAdapter(tt);
+                    }, throwable -> Log.e("Error in Task View", "Unable to load photos", throwable)));
         }
             /*
             LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
