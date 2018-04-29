@@ -27,6 +27,7 @@ import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class TaskListAdapter extends BaseAdapter {
@@ -185,11 +186,25 @@ public class TaskListAdapter extends BaseAdapter {
             }
             private void longclick() {
                 AlertDialog.Builder DelSubtaskDialogBuilder = new AlertDialog.Builder(context);
-                DelSubtaskDialogBuilder.setTitle("Are you sure to delete this subtask?");
+                DelSubtaskDialogBuilder.setTitle("Are you sure to delete this item?");
                 // In case they want to delete subtask
                 DelSubtaskDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int i) {
-
+                        if (type == 0) {
+                            mDisposable.add(mViewModel.deleteTask(((Task) temp).getTid())
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(() -> {
+                                            },
+                                            throwable -> Log.e(TAG, "Unable to delete task", throwable)));
+                        } else {
+                            sDisposable.add(sViewModel.deleteSubtask(((Subtask) temp).getStid())
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(() -> {
+                                            },
+                                            throwable -> Log.e(TAG, "Unable to delete subtask", throwable)));
+                        }
 
                     }});
                 // In case they don't want to delete subtask
